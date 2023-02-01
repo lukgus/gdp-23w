@@ -35,7 +35,7 @@ namespace gdp
 
     float g_PrevTime;
     float g_CurrTime;
-   
+
     struct SimpleShader {
         GLuint ProjectionMatrix;
         GLuint ViewMatrix;
@@ -45,6 +45,23 @@ namespace gdp
         GLuint Texture00;
         GLuint Color;
     } gSimpleShader;
+
+    struct BoneShader {
+        GLuint ProjectionMatrix;
+        GLuint ViewMatrix;
+        GLuint ModelMatrix;
+        GLuint RotationMatrix;
+        GLuint BoneMatrices[4];
+
+        GLuint Texture00;
+        GLuint Color;
+    } gBoneShader;
+
+    unsigned int gBoneShaderId;
+    unsigned int gSimpleShaderId;
+
+    glm::mat4 gProjectionMatrix;
+    glm::mat4 gViewMatrix;
 
     Window gWindow;
     Camera gCamera;
@@ -123,21 +140,61 @@ namespace gdp
         glm::mat4 ScaleMatrix = glm::scale(glm::mat4(1.0f), go->Scale);
         glm::mat4 ModelMatrix = TranslationMatrix * RotationMatrix * ScaleMatrix;
 
-        Material* material = GetMaterial(go->Renderer.MaterialId);
-        Texture* texture = GetTexture(material->TextureId);
+        if (go->HasBones)
+        {
+            ShaderProgram* shader;
+            shader = GetShaderProgram(gBoneShaderId);
+            glUseProgram(shader->id);
+            glUniformMatrix4fv(gBoneShader.ProjectionMatrix, 1, GL_FALSE, glm::value_ptr(gProjectionMatrix));
+            glUniformMatrix4fv(gBoneShader.ViewMatrix, 1, GL_FALSE, glm::value_ptr(gViewMatrix));
 
-        glActiveTexture(texture->glEnum);
-        glBindTexture(GL_TEXTURE_2D, texture->id);
-        glUniform1i(gSimpleShader.Texture00, texture->id - 1);
+            Material* material = GetMaterial(go->Renderer.MaterialId);
+            Texture* texture = GetTexture(material->TextureId);
 
-        glUniform3fv(gSimpleShader.Color, 1, glm::value_ptr(material->Color));
+            glActiveTexture(texture->glEnum);
+            glBindTexture(GL_TEXTURE_2D, texture->id);
+            glUniform1i(gBoneShader.Texture00, texture->id - 1);
 
-        glUniformMatrix4fv(gSimpleShader.ModelMatrix, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
-        glUniformMatrix4fv(gSimpleShader.RotationMatrix, 1, GL_FALSE, glm::value_ptr(RotationMatrix));
+            glUniform3fv(gBoneShader.Color, 1, glm::value_ptr(material->Color));
 
-        Model* model = GetModel(go->Renderer.MeshId);
-        glBindVertexArray(model->Vbo);
-        glDrawElements(GL_TRIANGLES, model->NumTriangles * 3, GL_UNSIGNED_INT, (GLvoid*)0);
+            glUniformMatrix4fv(gBoneShader.ModelMatrix, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+            glUniformMatrix4fv(gBoneShader.RotationMatrix, 1, GL_FALSE, glm::value_ptr(RotationMatrix));
+
+            for (int i = 0; i < 4; i++)
+            {
+                glUniformMatrix4fv(gBoneShader.BoneMatrices[i], 1, GL_FALSE, glm::value_ptr(go->BoneModelMatrices[i]));
+            }
+
+            Model* model = GetModel(go->Renderer.MeshId);
+            glBindVertexArray(model->Vbo);
+            glDrawElements(GL_TRIANGLES, model->NumTriangles * 3, GL_UNSIGNED_INT, (GLvoid*)0);
+        }
+        else
+        {
+            ShaderProgram* shader;
+            shader = GetShaderProgram(gSimpleShaderId);
+            glUseProgram(shader->id);
+
+            glUniformMatrix4fv(gSimpleShader.ProjectionMatrix, 1, GL_FALSE, glm::value_ptr(gProjectionMatrix));
+            glUniformMatrix4fv(gSimpleShader.ViewMatrix, 1, GL_FALSE, glm::value_ptr(gViewMatrix));
+
+            Material* material = GetMaterial(go->Renderer.MaterialId);
+            Texture* texture = GetTexture(material->TextureId);
+
+            glActiveTexture(texture->glEnum);
+            glBindTexture(GL_TEXTURE_2D, texture->id);
+            glUniform1i(gSimpleShader.Texture00, texture->id - 1);
+
+            glUniform3fv(gSimpleShader.Color, 1, glm::value_ptr(material->Color));
+
+            glUniformMatrix4fv(gSimpleShader.ModelMatrix, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+            glUniformMatrix4fv(gSimpleShader.RotationMatrix, 1, GL_FALSE, glm::value_ptr(RotationMatrix));
+
+            Model* model = GetModel(go->Renderer.MeshId);
+            glBindVertexArray(model->Vbo);
+            glDrawElements(GL_TRIANGLES, model->NumTriangles * 3, GL_UNSIGNED_INT, (GLvoid*)0);
+        }
+
 
         for (int i = 0; i < go->Children.size(); i++)
         {
@@ -157,19 +214,13 @@ namespace gdp
         glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
         glEnable(GL_DEPTH_TEST);
 
-        glm::mat4 projectionMatrix;
-        glm::mat4 viewMatrix;
-
         glm::vec3 direction = gCamera.direction;
         if (gCamera.targetting == true && gCameraTarget != nullptr)
             direction = glm::normalize(gCameraTarget->Position - gCamera.position);
 
 
-        projectionMatrix = glm::perspective(glm::radians(45.0f), ((GLfloat)gWindow.width) / ((GLfloat)gWindow.height), 0.1f, 100.0f);
-        viewMatrix = glm::lookAt(gCamera.position, gCamera.position + direction, glm::vec3(0.0f, 1.0f, 0.0f));
-
-        glUniformMatrix4fv(gSimpleShader.ProjectionMatrix, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-        glUniformMatrix4fv(gSimpleShader.ViewMatrix, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+        gProjectionMatrix = glm::perspective(glm::radians(45.0f), ((GLfloat)gWindow.width) / ((GLfloat)gWindow.height), 0.1f, 100.0f);
+        gViewMatrix = glm::lookAt(gCamera.position, gCamera.position + direction, glm::vec3(0.0f, 1.0f, 0.0f));
 
         glm::mat4 worldOrigin(1.f); // Identity Matrix
         for (int i = 0; i < gGameObjectVec.size(); i++)
@@ -283,17 +334,21 @@ namespace gdp
     }
 
     void GDP_Run() {
-        unsigned int shaderId;
         unsigned int textureId;
         unsigned int modelId;
         unsigned int materialId;
         unsigned int programId;
 
-        GDP_CreateShaderProgramFromFiles(shaderId, programId,
+        GDP_CreateShaderProgramFromFiles(gSimpleShaderId, programId,
             "assets/shaders/SimpleShader.vertex.glsl",
             "assets/shaders/SimpleShader.fragment.glsl");
 
-        ShaderProgram* shader = GetShaderProgram(shaderId);
+        GDP_CreateShaderProgramFromFiles(gBoneShaderId, programId,
+            "assets/shaders/BoneShader.vertex.glsl",
+            "assets/shaders/BoneShader.fragment.glsl");
+
+        ShaderProgram* shader;
+        shader = GetShaderProgram(gSimpleShaderId);
         glUseProgram(shader->id);
         gSimpleShader.ModelMatrix = glGetUniformLocation(shader->id, "ModelMatrix");
         gSimpleShader.ViewMatrix = glGetUniformLocation(shader->id, "ViewMatrix");
@@ -301,6 +356,19 @@ namespace gdp
         gSimpleShader.RotationMatrix = glGetUniformLocation(shader->id, "RotationMatrix");
         gSimpleShader.Texture00 = glGetUniformLocation(shader->id, "Texture00");
         gSimpleShader.Color = glGetUniformLocation(shader->id, "Color");
+
+        shader = GetShaderProgram(gBoneShaderId);
+        glUseProgram(shader->id);
+        gBoneShader.ModelMatrix = glGetUniformLocation(shader->id, "ModelMatrix");
+        gBoneShader.ViewMatrix = glGetUniformLocation(shader->id, "ViewMatrix");
+        gBoneShader.ProjectionMatrix = glGetUniformLocation(shader->id, "ProjectionMatrix");
+        gBoneShader.RotationMatrix = glGetUniformLocation(shader->id, "RotationMatrix");
+        gBoneShader.Texture00 = glGetUniformLocation(shader->id, "Texture00");
+        gBoneShader.Color = glGetUniformLocation(shader->id, "Color");
+        gBoneShader.BoneMatrices[0] = glGetUniformLocation(shader->id, "BoneMatrices[0]");
+        gBoneShader.BoneMatrices[1] = glGetUniformLocation(shader->id, "BoneMatrices[1]");
+        gBoneShader.BoneMatrices[2] = glGetUniformLocation(shader->id, "BoneMatrices[2]");
+        gBoneShader.BoneMatrices[3] = glGetUniformLocation(shader->id, "BoneMatrices[3]");
 
         //GDP_LoadTexture(textureId, "assets/textures/MetalPipeWallRusty_basecolor.png");
 
@@ -324,8 +392,12 @@ namespace gdp
         gTextureVec.push_back(texture);
     }
 
-    void GDP_LoadModel(unsigned int& id, const char* filepath) {
-        Model* model = new Model(filepath);
+    void GDP_LoadModel(unsigned int& id, const char* filepath, bool withBones) {
+        Model* model = nullptr;
+        if (withBones)
+            model = new Model(filepath, true);
+        else
+            model = new Model(filepath);
         printf("Loaded model \"%s\" with %d triangles, id is: %d\n", filepath, model->NumTriangles, model->Vbo);
         id = gModelVec.size();
         gModelVec.push_back(model);

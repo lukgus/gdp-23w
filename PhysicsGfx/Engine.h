@@ -28,7 +28,7 @@ namespace gdp
 
     // Assets
     void GDP_LoadTexture(unsigned int& id, const char* filepath);
-    void GDP_LoadModel(unsigned int& id, const char* filepath);
+    void GDP_LoadModel(unsigned int& id, const char* filepath, bool withBones = false);
     void GDP_CreateModel(unsigned int& id, const std::vector<glm::vec3>& vertices, const std::vector<int>& triangles);
     void GDP_GetModelData(unsigned int id, std::vector<glm::vec3>& vertices, std::vector<int>& triangles,
         unsigned int& numTriangles, unsigned int& vbo);

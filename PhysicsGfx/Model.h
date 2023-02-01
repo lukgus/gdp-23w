@@ -9,6 +9,7 @@ namespace gdp
 	class Model {
 	public:
 		Model(const char* filepath);
+		Model(const char* filepath, bool withBones);
 		Model(const std::vector<glm::vec3>& vertices, const std::vector<int>& triangles);
 		~Model();
 

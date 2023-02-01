@@ -3,6 +3,7 @@
 #include "PhysicsDemoWorld.h"
 #include "AIDemoWorld.h"
 #include "AnimationDemoWorld.h"
+#include "BoneDemoWorld.h"
 
 #include <string>
 
@@ -27,6 +28,10 @@ void LoadWorld(const std::string& worldName)
 	else if (strcmp(worldName.c_str(), "AnimationDemoWorld") == 0)
 	{
 		g_World = new AnimationDemoWorld();
+	}
+	else if (strcmp(worldName.c_str(), "BoneDemoWorld") == 0)
+	{
+		g_World = new BoneDemoWorld();
 	}
 }
 

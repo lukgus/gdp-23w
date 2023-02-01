@@ -32,10 +32,15 @@ namespace gdp
 		glm::vec3 Steering;
 
 		MeshRenderer Renderer;
-		iRigidBody* RigidBody;
 		bool Enabled;
-		bool HasParent;
 
+		// Physics & Simulation
+		iRigidBody* RigidBody;
+
+		// Animation
+		bool HasParent;
+		bool HasBones;
+		glm::mat4 BoneModelMatrices[4];
 		Animation Animation;
 		std::vector<GameObject*> Children;
 	};

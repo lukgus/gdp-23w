@@ -152,6 +152,7 @@
     <ClCompile Include="AIDemoWorld.cpp" />
     <ClCompile Include="AnimationDemoWorld.cpp" />
     <ClCompile Include="AnimationManager.cpp" />
+    <ClCompile Include="BoneDemoWorld.cpp" />
     <ClCompile Include="DebugRender.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="main.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationDemoWorld.h" />
     <ClInclude Include="AnimationManager.h" />
+    <ClInclude Include="BoneDemoWorld.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DebugRender.h" />
     <ClInclude Include="Engine.h" />
@@ -179,6 +181,10 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="World.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\BoneShader.fragment.glsl" />
+    <None Include="assets\shaders\BoneShader.vertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
