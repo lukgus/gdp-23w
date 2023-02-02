@@ -3,5 +3,5 @@
 class AudioManager
 {
 public:
-	Audiomanager() {}
+	AudioManager() {}
 };
