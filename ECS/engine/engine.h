@@ -2,10 +2,23 @@
 
 #include <vector>
 
-#include <ecs/System.h>
+#include <animation/animationmanager.h>
 
-#include <managers/entitymanager.h>
-#include <systems/rendersystem.h>
+#include <audio/audiomanager.h>
+
+#include <engine/ecs/System.h>
+#include <engine/entity/entitymanager.h>
+#include <engine/InputManager.h>
+
+#include <graphics/camera/cameramanager.h>
+#include <graphics/material/materialmanager.h>
+#include <graphics/mesh/meshmanager.h>
+#include <graphics/rendersystem.h>
+#include <graphics/shader/shadermanager.h>
+#include <graphics/texture/texturemanager.h>
+
+#include <world/worldmanager.h>
+
 
 class Engine
 {
@@ -44,6 +57,16 @@ public:
 	void RemoveSystem(System* removeSystem);
 
 private:
+	AnimationManager m_AnimationManager;
+	AudioManager m_AudioManager;
+	CameraManager m_CameraManager;
+	InputManager m_InputManager;
+	MaterialManager m_MaterialManager;
+	MeshManager m_MeshManager;
+	ShaderManager m_ShaderManager;
+	TextureManager m_TextureManager;
+	WorldManager m_WorldManager;
+
 	EntityManager m_EntityManager;
 
 	//JobQueue m_JobQueue;

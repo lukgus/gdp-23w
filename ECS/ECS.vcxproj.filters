@@ -15,40 +15,40 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="components\AnimationComponent.h">
+    <ClInclude Include="animation\components\AnimationComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="components\MeshRenderer.h">
+    <ClInclude Include="graphics\components\MeshRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="components\positioncomponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="components\rigidbodycomponent.h">
+    <ClInclude Include="physics\components\rigidbodycomponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="components\velocitycomponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ecs\Component.h">
+    <ClInclude Include="engine\ecs\Component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ecs\Entity.h">
+    <ClInclude Include="engine\ecs\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ecs\System.h">
+    <ClInclude Include="engine\ecs\System.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="engine\engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="managers\entitymanager.h">
+    <ClInclude Include="engine\entity\entitymanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="systems\motionsystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="systems\rendersystem.h">
+    <ClInclude Include="graphics\rendersystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="systems\scriptsystem.h">
@@ -59,7 +59,7 @@
     <ClCompile Include="engine\Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="managers\EntityManager.cpp">
+    <ClCompile Include="engine\entity\EntityManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="systems\motionsystem.cpp">

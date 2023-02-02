@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include <ecs/Component.h>
+#include <engine/ecs/Component.h>
 
 struct Entity
 {

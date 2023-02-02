@@ -135,24 +135,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="components\AnimationComponent.h" />
-    <ClInclude Include="components\MeshRenderer.h" />
+    <ClInclude Include="animation\components\AnimationComponent.h" />
+    <ClInclude Include="graphics\components\MeshRenderer.h" />
     <ClInclude Include="components\positioncomponent.h" />
-    <ClInclude Include="components\rigidbodycomponent.h" />
+    <ClInclude Include="physics\components\rigidbodycomponent.h" />
     <ClInclude Include="components\velocitycomponent.h" />
-    <ClInclude Include="ecs\Component.h" />
-    <ClInclude Include="ecs\Entity.h" />
-    <ClInclude Include="ecs\System.h" />
+    <ClInclude Include="engine\ecs\Component.h" />
+    <ClInclude Include="engine\ecs\Entity.h" />
+    <ClInclude Include="engine\ecs\System.h" />
     <ClInclude Include="engine\engine.h" />
-    <ClInclude Include="managers\entitymanager.h" />
+    <ClInclude Include="engine\entity\entitymanager.h" />
     <ClInclude Include="systems\motionsystem.h" />
-    <ClInclude Include="systems\rendersystem.h" />
+    <ClInclude Include="graphics\rendersystem.h" />
     <ClInclude Include="systems\scriptsystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="engine\Engine.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="managers\EntityManager.cpp" />
+    <ClCompile Include="engine\entity\EntityManager.cpp" />
     <ClCompile Include="systems\motionsystem.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

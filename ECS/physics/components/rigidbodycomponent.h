@@ -1,8 +1,7 @@
 #pragma once
 
-#include <ecs/Component.h>
-
-class RigidBody;
+#include <engine/ecs/Component.h>
+#include <physics/rigidbody.h>
 
 struct RigidBodyComponent : public Component
 {
