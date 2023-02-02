@@ -37,7 +37,7 @@ public:
 	std::vector<SoftBodySpring*> springs;
 	std::vector<SoftBodyNode*> neighbours;
 
-	friend CollisionHandler;
+	friend class CollisionHandler;
 private:
 	SoftBodyNode(const SoftBodyNode&) : RigidBody(RigidBodyDesc(), nullptr) { }
 	SoftBodyNode& operator=(const SoftBodyNode&) {

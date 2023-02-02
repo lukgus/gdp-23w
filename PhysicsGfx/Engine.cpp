@@ -111,7 +111,7 @@ namespace gdp
             elapsedTimeInSeconds = 0.1f;
 
         g_PhysicsWorld->TimeStep(elapsedTimeInSeconds);
-        g_AnimationManager.Update(gGameObjectVec, elapsedTimeInSeconds);
+        //g_AnimationManager.Update(gGameObjectVec, elapsedTimeInSeconds);
 
         Updatecallback(elapsedTimeInSeconds);
         memcpy(&(gLastKeyStates[0]), &(gKeyStates[0]), 255);
@@ -319,6 +319,11 @@ namespace gdp
         return g_PhysicsFactory->CreateRigidBody(desc, shape);
     }
 
+    iSoftBody* GDP_CreateSoftBody(const SoftBodyDesc& desc)
+    {
+        return g_PhysicsFactory->CreateSoftBody(desc);
+    }
+
 
     void GDP_LoadAnimation(const char* name, AnimationData animation)
     {
@@ -398,7 +403,7 @@ namespace gdp
             model = new Model(filepath, true);
         else
             model = new Model(filepath);
-        printf("Loaded model \"%s\" with %d triangles, id is: %d\n", filepath, model->NumTriangles, model->Vbo);
+        printf("Loaded model \"%s\" with %d vertices, %d triangles, id is: %d\n", filepath, model->vertices.size(), model->NumTriangles, model->Vbo);
         id = gModelVec.size();
         gModelVec.push_back(model);
     }

@@ -281,11 +281,11 @@ void CollisionHandler::Collide(float dt, std::vector<iCollisionBody*>& bodies, s
 {
 	int bodyCount = bodies.size();
 	bool collision = false;
-	for (int idxA = 0; idxA < bodyCount; idxA++)
+	for (int idxA = 0; idxA < bodyCount - 1; idxA++)
 	{
 		iCollisionBody* bodyA = bodies[idxA];
 
-		for (int idxB = idxA + 1; idxB < bodies.size(); idxB++)
+		for (int idxB = idxA + 1; idxB < bodyCount; idxB++)
 		{
 			iCollisionBody* bodyB = bodies[idxB];
 
@@ -426,12 +426,38 @@ bool CollisionHandler::CollideRigidSoft(float dt, RigidBody* rigidA, SoftBody* s
 
 bool CollisionHandler::CollideSoftSoft(float dt, SoftBody* softA, SoftBody* softB)
 {
-	// TODO:
+	glm::vec3 minBoundsA = softA->GetMinBounds();
+	glm::vec3 maxBoundsA = softA->GetMaxBounds();
+	glm::vec3 minBoundsB = softB->GetMinBounds();
+	glm::vec3 maxBoundsB = softB->GetMaxBounds();
 
-	return false;
+	if (maxBoundsA.x < minBoundsB.x) return false;
+	if (maxBoundsA.y < minBoundsB.y) return false;
+	if (maxBoundsA.z < minBoundsB.z) return false;
+
+	if (minBoundsA.x > maxBoundsB.x) return false;
+	if (minBoundsA.y > maxBoundsB.y) return false;
+	if (minBoundsA.z > maxBoundsB.z) return false;
+
+	return true;
 }
 
 void CollisionHandler::CollideInternalSoftBody(float dt, SoftBody* softBody)
 {
-	// TODO: 
+	unsigned int numNodes = softBody->m_Nodes.size();
+
+	for (unsigned int idxA = 0; idxA < numNodes - 1; idxA++)
+	{
+		SoftBodyNode* nodeA = softBody->m_Nodes[idxA];
+		for (unsigned int idxB = idxA + 1; idxB < numNodes; idxB++)
+		{
+			SoftBodyNode* nodeB = softBody->m_Nodes[idxB];
+
+			if (!nodeA->IsNeighbour(nodeB))
+			{
+				CollideSphereSphere(dt, nodeA, SphereShape::Cast(nodeA->GetShape()), nodeB, SphereShape::Cast(nodeB->GetShape()));
+			}
+		}
+	}
+	softBody->UpdateBoundaries();
 }

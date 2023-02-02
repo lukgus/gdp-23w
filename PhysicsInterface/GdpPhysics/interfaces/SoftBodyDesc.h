@@ -10,5 +10,5 @@ public:
 	SoftBodyDesc() {}
 
 	std::vector<glm::vec3> NodePositions;
-	std::vector<unsigned int> TriangulatedIndices;
+	std::vector<int> TriangulatedIndices;
 };

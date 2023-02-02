@@ -26,7 +26,7 @@ SoftBody::SoftBody(const SoftBodyDesc& desc)
 	rigidBodyDesc.mass = 0.4f;
 	rigidBodyDesc.linearDamping = 0.3f;
 	SphereShape* sphereShape = nullptr;
-	sphereShape = new SphereShape(2.0f);
+	sphereShape = new SphereShape(0.1f);
 
 	m_SpringConstant = 15.f;
 
@@ -36,7 +36,7 @@ SoftBody::SoftBody(const SoftBodyDesc& desc)
 	for (unsigned int idxNode = 0; idxNode < numNodes; idxNode++)
 	{
 		rigidBodyDesc.position = desc.NodePositions[idxNode];
-		rigidBodyDesc.isStatic = false;
+		rigidBodyDesc.isStatic = idxNode == 1 || idxNode == 11;
 		m_Nodes[idxNode] = new SoftBodyNode(rigidBodyDesc, sphereShape);
 	}
 

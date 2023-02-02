@@ -5,7 +5,7 @@
 
 #include "MeshRenderer.h"
 #include "Animation.h"
-#include <GdpPhysics/interfaces/iRigidBody.h>
+#include <GdpPhysics/interfaces/iCollisionBody.h>
 
 namespace gdp
 {
@@ -18,7 +18,7 @@ namespace gdp
 			, Scale(1.0f)
 			, Rotation(glm::quat(1.0f, 0.0f, 0.0f, 0.0f))
 			, Renderer()
-			, RigidBody(nullptr)
+			, PhysicsBody(nullptr)
 			, Enabled(true)
 			, HasParent(false)
 		{ }
@@ -35,7 +35,7 @@ namespace gdp
 		bool Enabled;
 
 		// Physics & Simulation
-		iRigidBody* RigidBody;
+		iCollisionBody* PhysicsBody;
 
 		// Animation
 		bool HasParent;

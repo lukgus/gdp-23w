@@ -8,6 +8,7 @@
 #include <GdpPhysics/interfaces/SphereShape.h>
 #include <GdpPhysics/interfaces/PlaneShape.h>
 #include <GdpPhysics/gdp/RigidBody.h>
+#include <GdpPhysics/gdp/SoftBody.h>
 
 namespace gdp
 {
@@ -22,6 +23,7 @@ namespace gdp
     //bool GDP_CollisionTest(GameObject* a, GameObject* b);
     iPhysicsWorld* GDP_GetPhysicsWorld();
     iRigidBody* GDP_CreateRigidBody(const RigidBodyDesc& desc, iShape* shape);
+    iSoftBody* GDP_CreateSoftBody(const SoftBodyDesc& desc);
 
     // Animation
     void GDP_LoadAnimation(const char* name, AnimationData animation);

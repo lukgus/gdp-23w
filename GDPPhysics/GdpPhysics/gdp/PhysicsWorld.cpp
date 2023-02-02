@@ -110,6 +110,11 @@ void PhysicsWorld::TimeStep(float dt)
 	std::vector<CollidingBodies> collisions;
 	m_CollisionHandler->Collide(dt, m_Bodies, collisions);
 
+	for (int i = 0; i < softBodyCount; i++)
+	{
+		m_CollisionHandler->CollideInternalSoftBody(dt, m_SoftBodies[i]);
+	}
+
 	// A list of collisions..
 	// Here we can collision callbacks.
 
