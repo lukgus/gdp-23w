@@ -2,7 +2,9 @@
 
 #include "iPhysicsWorld.h"
 #include "iRigidBody.h"
+#include "iSoftBody.h"
 #include "RigidBodyDesc.h"
+#include "SoftBodyDesc.h"
 #include "iShape.h"
 
 class iPhysicsFactory
@@ -12,6 +14,7 @@ public:
 
 	virtual iPhysicsWorld* CreateWorld() = 0;
 	virtual iRigidBody* CreateRigidBody(const RigidBodyDesc& desc, iShape* shape) = 0;
+	virtual iSoftBody* CreateSoftBody(const SoftBodyDesc& desc) = 0;
 
 protected:
 	iPhysicsFactory() {}

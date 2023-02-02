@@ -48,6 +48,18 @@
     <ClInclude Include="GdpPhysics\interfaces\RigidBodyDesc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GdpPhysics\interfaces\iSoftBody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GdpPhysics\interfaces\SoftBodyDesc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GdpPhysics\interfaces\iCollisionBody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GdpPhysics\interfaces\BodyType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GdpPhysics\interfaces\SphereShape.cpp">

@@ -1,6 +1,6 @@
 #pragma once
 
-enum ShapeType
+enum class ShapeType
 {
 	ShapeTypeSphere,
 	ShapeTypeBox,

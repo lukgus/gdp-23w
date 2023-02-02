@@ -30,6 +30,11 @@ RigidBody::RigidBody(const RigidBodyDesc& desc, iShape* shape)
 RigidBody::~RigidBody()
 { }
 
+RigidBody* RigidBody::Cast(iCollisionBody * body)
+{
+	return dynamic_cast<RigidBody*>(body);
+}
+
 iShape* RigidBody::GetShape()
 {
 	return m_Shape;

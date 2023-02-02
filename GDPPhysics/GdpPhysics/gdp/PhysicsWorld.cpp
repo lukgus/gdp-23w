@@ -19,52 +19,96 @@ void PhysicsWorld::SetGravity(const Vector3& gravity)
 	m_Gravity = gravity;
 }
 
-void PhysicsWorld::AddRigidBody(iRigidBody* body)
+void PhysicsWorld::AddBody(iCollisionBody* body)
 {
 	if (body == nullptr)
 		return;
 
 	// TODO: Check if body is already in the bodies vector
+	m_Bodies.push_back(body);
 
-	// TODO: Check if body is RigidBody type
-	m_RigidBodies.push_back(dynamic_cast<RigidBody*>(body));
+	// You could use a switch here, or get the body type once..
+	if (body->GetBodyType() == BodyType::RigidBody)
+	{
+		RigidBody* rigidBody = RigidBody::Cast(body);
+
+		if (std::find(m_RigidBodies.begin(), m_RigidBodies.end(), rigidBody) == m_RigidBodies.end())
+		{
+			m_RigidBodies.push_back(rigidBody);
+		}
+	}
+	else if (body->GetBodyType() == BodyType::SoftBody)
+	{
+		SoftBody* rigidBody = SoftBody::Cast(body);
+
+		if (std::find(m_SoftBodies.begin(), m_SoftBodies.end(), rigidBody) == m_SoftBodies.end())
+		{
+			m_SoftBodies.push_back(rigidBody);
+		}
+	}
 }
 
-void PhysicsWorld::RemoveRigidBody(iRigidBody* body)
+void PhysicsWorld::RemoveBody(iCollisionBody* body)
 {
-	// TODO: Remove body from the vector
+	// TODO:
 }
 
 void PhysicsWorld::TimeStep(float dt)
 {
-	int todo = 0;
+	int bodyCount = m_Bodies.size();
+	int softBodyCount = m_SoftBodies.size();
+	int rigidBodyCount = m_RigidBodies.size();
+
 	for (int i = 0; i < m_RigidBodies.size(); i++) {
 		m_RigidBodies[i]->Update(dt);
 	}
 
 	// Velocity Verlet steps
 	// Step #0 Update everything
-	for (int i = 0; i < m_RigidBodies.size(); i++) {
-		m_RigidBodies[i]->SetGravityAcceleration(m_Gravity);
-		m_RigidBodies[i]->UpdateAcceleration();
+	for (int i = 0; i < rigidBodyCount; i++) {
+		if (!m_RigidBodies[i]->IsStatic())
+		{
+			m_RigidBodies[i]->SetGravityAcceleration(m_Gravity);
+			m_RigidBodies[i]->UpdateAcceleration();
+		}
+	}
+
+	for (int i = 0; i < softBodyCount; i++) {
+		m_SoftBodies[i]->SetGravityAcceleration(m_Gravity);
+		m_SoftBodies[i]->UpdateAcceleration();
 	}
 
 	// Step #3 : Verlet
 	// velocity += acceleration * (dt/2)
-	for (int i = 0; i < m_RigidBodies.size(); i++) {
-		m_RigidBodies[i]->VerletStep3(dt);
-		m_RigidBodies[i]->ApplyDamping(dt / 2.f);
+	for (int i = 0; i < rigidBodyCount; i++) {
+		if (!m_RigidBodies[i]->IsStatic())
+		{
+			m_RigidBodies[i]->VerletStep3(dt);
+			m_RigidBodies[i]->ApplyDamping(dt / 2.f);
+		}
+	}
+
+	for (int i = 0; i < softBodyCount; i++) {
+		m_SoftBodies[i]->VerletStep3(dt);
+		m_SoftBodies[i]->ApplyDamping(dt / 2.f);
 	}
 
 	// Step #1 : Verlet
 	// position += ( velocity+acceleration * (dt/2) ) * dt
-	for (int i = 0; i < m_RigidBodies.size(); i++) {
-		m_RigidBodies[i]->VerletStep1(dt);
+	for (int i = 0; i < rigidBodyCount; i++) {
+		if (!m_RigidBodies[i]->IsStatic())
+		{
+			m_RigidBodies[i]->VerletStep1(dt);
+		}
+	}
+
+	for (int i = 0; i < softBodyCount; i++) {
+		m_SoftBodies[i]->VerletStep1(dt);
 	}
 
 	// Handle collisions here
 	std::vector<CollidingBodies> collisions;
-	m_CollisionHandler->Collide(dt, m_RigidBodies, collisions);
+	m_CollisionHandler->Collide(dt, m_Bodies, collisions);
 
 	// A list of collisions..
 	// Here we can collision callbacks.
@@ -72,11 +116,17 @@ void PhysicsWorld::TimeStep(float dt)
 
 	// Step #2 : Verlet
 	// velocity += acceleration * (dt/2)
-	for (int i = 0; i < m_RigidBodies.size(); i++) {
+	for (int i = 0; i < rigidBodyCount; i++) {
 		m_RigidBodies[i]->VerletStep2(dt);
 		m_RigidBodies[i]->ApplyDamping(dt / 2.f);
 		m_RigidBodies[i]->KillForces();
 
 		// Update all listeners for rigid body positions
+	}
+
+	for (int i = 0; i < softBodyCount; i++) {
+		m_SoftBodies[i]->VerletStep2(dt);
+		m_SoftBodies[i]->ApplyDamping(dt / 2.f);
+		m_SoftBodies[i]->KillForces();
 	}
 }

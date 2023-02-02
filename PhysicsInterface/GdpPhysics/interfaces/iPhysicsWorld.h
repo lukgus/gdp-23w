@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Math.h"
-#include "iRigidBody.h"
+#include "iCollisionBody.h"
 
 class iPhysicsWorld
 {
@@ -10,8 +10,8 @@ public:
 
 	virtual void SetGravity(const Vector3& gravity) = 0;
 
-	virtual void AddRigidBody(iRigidBody* body) = 0;
-	virtual void RemoveRigidBody(iRigidBody* body) = 0;
+	virtual void AddBody(iCollisionBody* body) = 0;
+	virtual void RemoveBody(iCollisionBody* body) = 0;
 
 	virtual void TimeStep(float dt) = 0;
 

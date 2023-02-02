@@ -3,6 +3,7 @@
 #include <GdpPhysics/interfaces/iPhysicsWorld.h>
 
 #include "RigidBody.h"
+#include "SoftBody.h"
 #include "CollisionHandler.h"
 
 #include <vector>
@@ -15,15 +16,18 @@ public:
 
 	virtual void SetGravity(const Vector3& gravity) override;
 
-	virtual void AddRigidBody(iRigidBody* body) override;
-	virtual void RemoveRigidBody(iRigidBody* body) override;
+	virtual void AddBody(iCollisionBody* body) override;
+	virtual void RemoveBody(iCollisionBody* body) override;
 
 	virtual void TimeStep(float dt) override;
 
 private:
 	Vector3 m_Gravity;
 
+	std::vector<iCollisionBody*> m_Bodies;
 	std::vector<RigidBody*> m_RigidBodies;
+	std::vector<SoftBody*> m_SoftBodies;
+
 	CollisionHandler* m_CollisionHandler;
 
 	PhysicsWorld(const PhysicsWorld&) {}

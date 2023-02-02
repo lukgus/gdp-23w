@@ -11,6 +11,8 @@ public:
 	RigidBody(const RigidBodyDesc& desc, iShape* shape);
 	~RigidBody();
 
+	static RigidBody* Cast(iCollisionBody* body);
+
 	iShape* GetShape();
 
 	bool IsStatic();

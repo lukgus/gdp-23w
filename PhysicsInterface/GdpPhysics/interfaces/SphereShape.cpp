@@ -1,7 +1,7 @@
 #include "SphereShape.h"
 
 SphereShape::SphereShape(float radius)
-	: iShape(ShapeTypeSphere)
+	: iShape(ShapeType::ShapeTypeSphere)
 	, m_Radius(radius)
 { }
 

@@ -1,7 +1,7 @@
 #include "PlaneShape.h"
 
 PlaneShape::PlaneShape(float dotProduct, const Vector3& normal)
-	: iShape(ShapeTypePlane)
+	: iShape(ShapeType::ShapeTypePlane)
 	, m_DotProduct(dotProduct)
 	, m_Normal(normal)
 { }

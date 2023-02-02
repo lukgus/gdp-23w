@@ -2,6 +2,7 @@
 
 #include "PhysicsWorld.h"
 #include "RigidBody.h"
+#include "SoftBody.h"
 
 PhysicsFactory::PhysicsFactory()
 	: iPhysicsFactory()
@@ -18,4 +19,9 @@ iPhysicsWorld* PhysicsFactory::CreateWorld()
 iRigidBody* PhysicsFactory::CreateRigidBody(const RigidBodyDesc& desc, iShape* shape)
 {
 	return new RigidBody(desc, shape);
+}
+
+iSoftBody* PhysicsFactory::CreateSoftBody(const SoftBodyDesc& desc)
+{
+	return new SoftBody(desc);
 }

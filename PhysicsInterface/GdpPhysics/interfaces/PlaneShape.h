@@ -23,7 +23,7 @@ private:
 	Vector3 m_Normal;
 	float m_DotProduct;
 
-	PlaneShape(const PlaneShape&) : iShape(ShapeTypePlane) {}
+	PlaneShape(const PlaneShape&) : iShape(ShapeType::ShapeTypePlane) {}
 	PlaneShape& operator=(const PlaneShape&) {
 		return *this;
 	}

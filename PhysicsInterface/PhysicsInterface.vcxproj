@@ -139,16 +139,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="GdpPhysics\interfaces\BodyType.h" />
     <ClInclude Include="GdpPhysics\interfaces\BoxShape.h" />
     <ClInclude Include="GdpPhysics\interfaces\CylinderShape.h" />
+    <ClInclude Include="GdpPhysics\interfaces\iCollisionBody.h" />
     <ClInclude Include="GdpPhysics\interfaces\iPhysicsFactory.h" />
     <ClInclude Include="GdpPhysics\interfaces\iPhysicsWorld.h" />
     <ClInclude Include="GdpPhysics\interfaces\iRigidBody.h" />
     <ClInclude Include="GdpPhysics\interfaces\iShape.h" />
+    <ClInclude Include="GdpPhysics\interfaces\iSoftBody.h" />
     <ClInclude Include="GdpPhysics\interfaces\Math.h" />
     <ClInclude Include="GdpPhysics\interfaces\PlaneShape.h" />
     <ClInclude Include="GdpPhysics\interfaces\RigidBodyDesc.h" />
     <ClInclude Include="GdpPhysics\interfaces\ShapeType.h" />
+    <ClInclude Include="GdpPhysics\interfaces\SoftBodyDesc.h" />
     <ClInclude Include="GdpPhysics\interfaces\SphereShape.h" />
   </ItemGroup>
   <ItemGroup>

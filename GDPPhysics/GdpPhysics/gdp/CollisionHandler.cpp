@@ -277,66 +277,161 @@ bool CollisionHandler::CollideSpherePlane(float dt, RigidBody* sphere, SphereSha
 }
 
 
-void CollisionHandler::Collide(float dt, std::vector<RigidBody*>& bodies, std::vector<CollidingBodies>& collisions)
+void CollisionHandler::Collide(float dt, std::vector<iCollisionBody*>& bodies, std::vector<CollidingBodies>& collisions)
 {
-	for (int idxA = 0; idxA < bodies.size(); idxA++)
+	int bodyCount = bodies.size();
+	bool collision = false;
+	for (int idxA = 0; idxA < bodyCount; idxA++)
 	{
-		RigidBody* bodyA = bodies[idxA];
-		iShape* shapeA = bodyA->GetShape();
+		iCollisionBody* bodyA = bodies[idxA];
+
 		for (int idxB = idxA + 1; idxB < bodies.size(); idxB++)
 		{
-			RigidBody* bodyB = bodies[idxB];
-			iShape* shapeB = bodyB->GetShape();
+			iCollisionBody* bodyB = bodies[idxB];
 
-			bool collision = false;
+			collision = false;
 
-			if (shapeA->GetShapeType() == ShapeTypeSphere)
+			// CHECK WHICH BODY TYPES...
+			if (bodyA->GetBodyType() == BodyType::RigidBody)
 			{
-				if (shapeB->GetShapeType() == ShapeTypeSphere)
+				if (bodyB->GetBodyType() == BodyType::RigidBody)
 				{
-					collision = CollideSphereSphere(dt, bodyA, SphereShape::Cast(shapeA), bodyB, SphereShape::Cast(shapeB));
+					collision = CollideRigidRigid(dt, RigidBody::Cast(bodyA), RigidBody::Cast(bodyB));
 				}
-				else if (shapeB->GetShapeType() == ShapeTypePlane)
+				else if (bodyB->GetBodyType() == BodyType::SoftBody)
 				{
-					collision = CollideSpherePlane(dt, bodyA, SphereShape::Cast(shapeA), bodyB, PlaneShape::Cast(shapeB));
-				}
-				else if (shapeB->GetShapeType() == ShapeTypeBox)
-				{
-					// CollideSphereBox(dt, bodyA, SphereShape::Cast(shapeA), bodyB, BoxShape::Cast(shapeB));
+					collision = CollideRigidSoft(dt, RigidBody::Cast(bodyA), SoftBody::Cast(bodyB));
 				}
 				else
 				{
-					// We don't have this handled at the moment.
+					// We don't know this type of body
 				}
 			}
-			else if (shapeA->GetShapeType() == ShapeTypePlane)
+			else if (bodyA->GetBodyType() == BodyType::SoftBody)
 			{
-				if (shapeB->GetShapeType() == ShapeTypeSphere)
+				if (bodyB->GetBodyType() == BodyType::RigidBody)
 				{
-					collision = CollideSpherePlane(dt, bodyB, SphereShape::Cast(shapeB), bodyA, PlaneShape::Cast(shapeA));
+					collision = CollideRigidSoft(dt, RigidBody::Cast(bodyB), SoftBody::Cast(bodyA));
 				}
-				else if (shapeB->GetShapeType() == ShapeTypePlane)
+				else if (bodyB->GetBodyType() == BodyType::SoftBody)
 				{
-					// nope...
+					collision = CollideSoftSoft(dt, SoftBody::Cast(bodyA), SoftBody::Cast(bodyB));
 				}
 				else
 				{
-					// We don't have this handled at the moment.
+					// We don't know this type of body
 				}
 			}
 			else
 			{
-				// We don't have this handled at the moment.
+				// We don't know this type of body
 			}
+
 
 			if (collision)
 			{
 				collisions.push_back(CollidingBodies(bodyA, bodyB));
 			}
+		}
+	}
+}
 
-			if (shapeA != nullptr && shapeB != nullptr)
+bool CollisionHandler::CollideRigidRigid(float dt, RigidBody* rigidA, RigidBody* rigidB)
+{
+	iShape* shapeB = rigidA->GetShape();
+	iShape* shapeA = rigidB->GetShape();
+
+	bool collision = false;
+
+	if (shapeA->GetShapeType() == ShapeType::ShapeTypeSphere)
+	{
+		if (shapeB->GetShapeType() == ShapeType::ShapeTypeSphere)
+		{
+			collision = CollideSphereSphere(dt, rigidA, SphereShape::Cast(shapeA), rigidB, SphereShape::Cast(shapeB));
+		}
+		else if (shapeB->GetShapeType() == ShapeType::ShapeTypePlane)
+		{
+			collision = CollideSpherePlane(dt, rigidA, SphereShape::Cast(shapeA), rigidB, PlaneShape::Cast(shapeB));
+		}
+		else if (shapeB->GetShapeType() == ShapeType::ShapeTypeBox)
+		{
+			// CollideSphereBox(dt, bodyA, SphereShape::Cast(shapeA), bodyB, BoxShape::Cast(shapeB));
+		}
+		else
+		{
+			// We don't have this handled at the moment.
+		}
+	}
+	else if (shapeA->GetShapeType() == ShapeType::ShapeTypePlane)
+	{
+		if (shapeB->GetShapeType() == ShapeType::ShapeTypeSphere)
+		{
+			collision = CollideSpherePlane(dt, rigidB, SphereShape::Cast(shapeB), rigidA, PlaneShape::Cast(shapeA));
+		}
+		else if (shapeB->GetShapeType() == ShapeType::ShapeTypePlane)
+		{
+			// nope...
+		}
+		else
+		{
+			// We don't have this handled at the moment.
+		}
+	}
+	else
+	{
+		// We don't have this handled at the moment.
+	}
+
+	return collision;
+}
+
+bool CollisionHandler::CollideRigidSoft(float dt, RigidBody* rigidA, SoftBody* softB)
+{
+	iShape* shapeA = rigidA->m_Shape;
+
+	bool collision = false;
+
+	if (shapeA->GetShapeType() == ShapeType::ShapeTypeSphere)
+	{
+		unsigned int numNodes = softB->GetNumNodes();
+		for (unsigned int i = 0; i < numNodes; i++)
+		{
+			if (CollideSphereSphere(dt, rigidA, SphereShape::Cast(shapeA), 
+				softB->m_Nodes[i], SphereShape::Cast(softB->m_Nodes[i]->m_Shape)))
 			{
+				collision = true;
 			}
 		}
 	}
+	else if (shapeA->GetShapeType() == ShapeType::ShapeTypePlane)
+	{
+		unsigned int numNodes = softB->GetNumNodes();
+		for (unsigned int i = 0; i < numNodes; i++)
+		{
+			if (CollideSpherePlane(dt,
+				softB->m_Nodes[i], SphereShape::Cast(softB->m_Nodes[i]->m_Shape), 
+				rigidA, PlaneShape::Cast(shapeA)))
+			{
+				collision = true;
+			}
+		}
+	}
+	else
+	{
+		// Implement more shapes!
+	}
+
+	return collision;
+}
+
+bool CollisionHandler::CollideSoftSoft(float dt, SoftBody* softA, SoftBody* softB)
+{
+	// TODO:
+
+	return false;
+}
+
+void CollisionHandler::CollideInternalSoftBody(float dt, SoftBody* softBody)
+{
+	// TODO: 
 }

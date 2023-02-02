@@ -144,7 +144,7 @@ namespace gdp
 		desc.position = glm::vec3(0.f);
 		desc.linearVelocity = glm::vec3(0.f);
 		ground->RigidBody = GDP_CreateRigidBody(desc, planeShape);
-		GDP_GetPhysicsWorld()->AddRigidBody(ground->RigidBody);
+		GDP_GetPhysicsWorld()->AddBody(ground->RigidBody);
 	}
 
 	void PhysicsDemoWorld::CreateBall(const glm::vec3& position, float size)
@@ -165,7 +165,7 @@ namespace gdp
 		ball->RigidBody = GDP_CreateRigidBody(desc, ballShape);
 
 		m_BallList.push_back(ball);
-		GDP_GetPhysicsWorld()->AddRigidBody(ball->RigidBody);
+		GDP_GetPhysicsWorld()->AddBody(ball->RigidBody);
 	}
 
 	void PhysicsDemoWorld::CreatePlayerBall(const glm::vec3& position)
@@ -184,6 +184,6 @@ namespace gdp
 		desc.linearVelocity = glm::vec3(0.f);
 		m_ControllableBall->RigidBody = GDP_CreateRigidBody(desc, ballShape);
 
-		GDP_GetPhysicsWorld()->AddRigidBody(m_ControllableBall->RigidBody);
+		GDP_GetPhysicsWorld()->AddBody(m_ControllableBall->RigidBody);
 	}
 }

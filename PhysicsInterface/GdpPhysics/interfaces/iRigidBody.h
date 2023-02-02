@@ -1,8 +1,10 @@
 #pragma once
 
+#include "iCollisionBody.h"
+
 #include "Math.h"
 
-class iRigidBody
+class iRigidBody : public iCollisionBody
 {
 public:
 	virtual ~iRigidBody() {}
@@ -23,10 +25,10 @@ public:
 	virtual void ApplyTorqueImpulse(const Vector3& torqueImpulse) = 0;
 
 protected:
-	iRigidBody() {}
+	iRigidBody() : iCollisionBody(BodyType::RigidBody) {}
 
 private:
-	iRigidBody(const iRigidBody&) { }
+	iRigidBody(const iRigidBody&) : iCollisionBody(BodyType::RigidBody) { }
 	iRigidBody& operator=(const iRigidBody&) {
 		return *this;
 	}

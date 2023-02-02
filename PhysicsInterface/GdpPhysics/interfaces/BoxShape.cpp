@@ -1,7 +1,7 @@
 #include "BoxShape.h"
 
 BoxShape::BoxShape(const Vector3& halfExtents)
-	: iShape(ShapeTypeBox)
+	: iShape(ShapeType::ShapeTypeBox)
 	, m_HalfExtents(halfExtents)
 { }
 

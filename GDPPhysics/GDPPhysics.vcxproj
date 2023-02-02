@@ -147,12 +147,14 @@
     <ClInclude Include="GdpPhysics\gdp\PhysicsFactory.h" />
     <ClInclude Include="GdpPhysics\gdp\PhysicsWorld.h" />
     <ClInclude Include="GdpPhysics\gdp\RigidBody.h" />
+    <ClInclude Include="GdpPhysics\gdp\SoftBody.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GdpPhysics\gdp\CollisionHandler.cpp" />
     <ClCompile Include="GdpPhysics\gdp\PhysicsFactory.cpp" />
     <ClCompile Include="GdpPhysics\gdp\PhysicsWorld.cpp" />
     <ClCompile Include="GdpPhysics\gdp\RigidBody.cpp" />
+    <ClCompile Include="GdpPhysics\gdp\SoftBody.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

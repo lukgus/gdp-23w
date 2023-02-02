@@ -1,7 +1,7 @@
 #include "CylinderShape.h"
 
 CylinderShape::CylinderShape(const Vector3& halfExtents)
-	: iShape(ShapeTypeCylinder)
+	: iShape(ShapeType::ShapeTypeCylinder)
 	, m_HalfExtents(halfExtents)
 { }
 

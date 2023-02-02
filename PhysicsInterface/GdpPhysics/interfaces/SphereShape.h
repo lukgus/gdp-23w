@@ -18,7 +18,7 @@ protected:
 
 private:
 	float m_Radius;
-	SphereShape(const SphereShape&) : iShape(ShapeTypeSphere) {}
+	SphereShape(const SphereShape&) : iShape(ShapeType::ShapeTypeSphere) {}
 	SphereShape& operator=(const SphereShape&) {
 		return *this;
 	}

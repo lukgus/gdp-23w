@@ -19,7 +19,7 @@ protected:
 
 private:
 	Vector3 m_HalfExtents;
-	CylinderShape(const CylinderShape&) : iShape(ShapeTypeCylinder) {}
+	CylinderShape(const CylinderShape&) : iShape(ShapeType::ShapeTypeCylinder) {}
 	CylinderShape& operator=(const CylinderShape&) {
 		return *this;
 	}

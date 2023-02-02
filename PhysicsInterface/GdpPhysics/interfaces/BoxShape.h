@@ -19,7 +19,7 @@ protected:
 
 private:
 	Vector3 m_HalfExtents;
-	BoxShape(const BoxShape&) : iShape(ShapeTypeBox) {}
+	BoxShape(const BoxShape&) : iShape(ShapeType::ShapeTypeBox) {}
 	BoxShape& operator=(const BoxShape&) {
 		return *this;
 	}
