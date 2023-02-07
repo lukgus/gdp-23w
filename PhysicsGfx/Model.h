@@ -29,7 +29,8 @@ namespace gdp
 		sFloat4 TexUVx2;
 		sFloat4 Normal;
 		sFloat4 BoneIds;
-	} sVertex_p4t4n4b4;
+		sFloat4 BoneWeights;
+	} sVertex_p4t4n4b4w4;
 
 	class Model {
 	public:

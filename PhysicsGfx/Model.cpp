@@ -215,7 +215,7 @@ namespace gdp
 
 		unsigned int numVerticesInVertArray = mesh->mNumVertices;
 		unsigned int numIndicesInIndexArray = mesh->mNumFaces * 3;
-		sVertex_p4t4n4b4* pTempVertArray = new sVertex_p4t4n4b4[numIndicesInIndexArray * 2];
+		sVertex_p4t4n4b4w4* pTempVertArray = new sVertex_p4t4n4b4w4[numIndicesInIndexArray * 2];
 		GLuint* pIndexArrayLocal = new GLuint[numIndicesInIndexArray * 2];
 		int count = 0;
 		int index = 0;
@@ -264,22 +264,25 @@ namespace gdp
 				pTempVertArray[vertArrayIndex].Normal.z = normal.z;
 				pTempVertArray[vertArrayIndex].Normal.w = 0.0f;
 
-				if (position.y > 1.8f) {
-					pTempVertArray[vertArrayIndex].BoneIds.x = 3;
-				}
-				else if (position.y > 1.2f) {
-					pTempVertArray[vertArrayIndex].BoneIds.x = 2;
-				}
-				else if (position.y > 0.6f) {
-					pTempVertArray[vertArrayIndex].BoneIds.x = 1;
-				}
-				else {
-					pTempVertArray[vertArrayIndex].BoneIds.x = 0;
-				}
+				pTempVertArray[vertArrayIndex].BoneIds.x = 0;
+				pTempVertArray[vertArrayIndex].BoneIds.y = 1;
+				pTempVertArray[vertArrayIndex].BoneIds.z = 2;
+				pTempVertArray[vertArrayIndex].BoneIds.w = 3;
 
-				pTempVertArray[vertArrayIndex].BoneIds.y = 0.f;
-				pTempVertArray[vertArrayIndex].BoneIds.z = 0.f;
-				pTempVertArray[vertArrayIndex].BoneIds.w = 0.f;
+				glm::vec4 weights;
+				weights.x = abs(0.f - position.y);
+				weights.y = abs(70.f - position.y);
+				weights.z = abs(140.f - position.y);
+				weights.w = abs(200.f - position.y);
+
+				weights = glm::normalize(weights);
+
+				pTempVertArray[vertArrayIndex].BoneWeights.x = weights.x;
+				pTempVertArray[vertArrayIndex].BoneWeights.y = weights.y;
+				pTempVertArray[vertArrayIndex].BoneWeights.z = weights.z;
+				pTempVertArray[vertArrayIndex].BoneWeights.w = weights.w;
+
+
 
 				pIndexArrayLocal[vertArrayIndex] = vertArrayIndex;
 
@@ -296,25 +299,28 @@ namespace gdp
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 		glEnableVertexAttribArray(3);
+		glEnableVertexAttribArray(4);
 
 		glGenBuffers(1, &VertexBufferId);
 		glGenBuffers(1, &IndexBufferId);
 
 		glBindBuffer(GL_ARRAY_BUFFER, VertexBufferId);
 
-		unsigned int totalVertBufferSizeBYTES = numIndicesInIndexArray * sizeof(sVertex_p4t4n4b4); ;
+		unsigned int totalVertBufferSizeBYTES = numIndicesInIndexArray * sizeof(sVertex_p4t4n4b4w4); ;
 		glBufferData(GL_ARRAY_BUFFER, totalVertBufferSizeBYTES, pTempVertArray, GL_STATIC_DRAW);
 
-		unsigned int bytesInOneVertex = sizeof(sVertex_p4t4n4b4);
-		unsigned int byteOffsetToPosition = offsetof(sVertex_p4t4n4b4, Pos);
-		unsigned int byteOffsetToNormal = offsetof(sVertex_p4t4n4b4, Normal);
-		unsigned int byteOffsetToUVCoords = offsetof(sVertex_p4t4n4b4, TexUVx2);
-		unsigned int byteOffsetToBoneIds = offsetof(sVertex_p4t4n4b4, BoneIds);
+		unsigned int bytesInOneVertex = sizeof(sVertex_p4t4n4b4w4);
+		unsigned int byteOffsetToPosition = offsetof(sVertex_p4t4n4b4w4, Pos);
+		unsigned int byteOffsetToUVCoords = offsetof(sVertex_p4t4n4b4w4, TexUVx2);
+		unsigned int byteOffsetToNormal = offsetof(sVertex_p4t4n4b4w4, Normal);
+		unsigned int byteOffsetToBoneIds = offsetof(sVertex_p4t4n4b4w4, BoneIds);
+		unsigned int byteOffsetToBoneWeights = offsetof(sVertex_p4t4n4b4w4, BoneWeights);
 
 		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, bytesInOneVertex, (GLvoid*)byteOffsetToPosition);
 		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, bytesInOneVertex, (GLvoid*)byteOffsetToUVCoords);
 		glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, bytesInOneVertex, (GLvoid*)byteOffsetToNormal);
 		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, bytesInOneVertex, (GLvoid*)byteOffsetToBoneIds);
+		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, bytesInOneVertex, (GLvoid*)byteOffsetToBoneWeights);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IndexBufferId);
 

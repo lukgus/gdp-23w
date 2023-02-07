@@ -21,11 +21,13 @@
 
 #include "GL.h"
 
+//#include <physics/gdp/PhysicsFactory.h>
+
 namespace gdp
 {
     // Initialize a Physics Factory
-    iPhysicsFactory* g_PhysicsFactory;
-    iPhysicsWorld* g_PhysicsWorld;
+   // physics::iPhysicsFactory* g_PhysicsFactory;
+    //physics::iPhysicsWorld* g_PhysicsWorld;
 
     // Managers
     AnimationManager g_AnimationManager;
@@ -52,6 +54,7 @@ namespace gdp
         GLuint ModelMatrix;
         GLuint RotationMatrix;
         GLuint BoneMatrices[4];
+        GLuint BoneRotationMatrices[4];
 
         GLuint Texture00;
         GLuint Color;
@@ -110,8 +113,8 @@ namespace gdp
         if (elapsedTimeInSeconds > 0.1f)
             elapsedTimeInSeconds = 0.1f;
 
-        g_PhysicsWorld->TimeStep(elapsedTimeInSeconds);
-        //g_AnimationManager.Update(gGameObjectVec, elapsedTimeInSeconds);
+       // g_PhysicsWorld->TimeStep(elapsedTimeInSeconds);
+        g_AnimationManager.Update(gGameObjectVec, elapsedTimeInSeconds);
 
         Updatecallback(elapsedTimeInSeconds);
         memcpy(&(gLastKeyStates[0]), &(gKeyStates[0]), 255);
@@ -163,6 +166,7 @@ namespace gdp
             for (int i = 0; i < 4; i++)
             {
                 glUniformMatrix4fv(gBoneShader.BoneMatrices[i], 1, GL_FALSE, glm::value_ptr(go->BoneModelMatrices[i]));
+                glUniformMatrix4fv(gBoneShader.BoneRotationMatrices[i], 1, GL_FALSE, glm::value_ptr(go->BoneRotationMatrices[i]));
             }
 
             Model* model = GetModel(go->Renderer.MeshId);
@@ -219,7 +223,7 @@ namespace gdp
             direction = glm::normalize(gCameraTarget->Position - gCamera.position);
 
 
-        gProjectionMatrix = glm::perspective(glm::radians(45.0f), ((GLfloat)gWindow.width) / ((GLfloat)gWindow.height), 0.1f, 100.0f);
+        gProjectionMatrix = glm::perspective(glm::radians(45.0f), ((GLfloat)gWindow.width) / ((GLfloat)gWindow.height), 0.1f, 1000.0f);
         gViewMatrix = glm::lookAt(gCamera.position, gCamera.position + direction, glm::vec3(0.0f, 1.0f, 0.0f));
 
         glm::mat4 worldOrigin(1.f); // Identity Matrix
@@ -267,15 +271,14 @@ namespace gdp
         glutInitContextVersion(4, 0);
         glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
         glutInitContextProfile(GLUT_CORE_PROFILE);
-
         glutSetOption(
             GLUT_ACTION_ON_WINDOW_CLOSE,
             GLUT_ACTION_GLUTMAINLOOP_RETURNS
         );
 
         // Create physics factory and the world
-        g_PhysicsFactory = new PhysicsFactory();
-        g_PhysicsWorld = g_PhysicsFactory->CreateWorld();
+        //g_PhysicsFactory = new PhysicsFactoryType();
+       // g_PhysicsWorld = g_PhysicsFactory->CreateWorld();
     }
 
     void GDP_Destroy() {
@@ -307,22 +310,25 @@ namespace gdp
         glCullFace(GL_BACK);
 
         glewInit();
+
+
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
-    iPhysicsWorld* GDP_GetPhysicsWorld()
-    {
-        return g_PhysicsWorld;
-    }
+    //physics::iPhysicsWorld* GDP_GetPhysicsWorld()
+    //{
+    //    return g_PhysicsWorld;
+    //}
 
-    iRigidBody* GDP_CreateRigidBody(const RigidBodyDesc& desc, iShape* shape)
-    {
-        return g_PhysicsFactory->CreateRigidBody(desc, shape);
-    }
+    //physics::iRigidBody* GDP_CreateRigidBody(const physics::RigidBodyDesc& desc, physics::iShape* shape)
+    //{
+    //    return g_PhysicsFactory->CreateRigidBody(desc, shape);
+    //}
 
-    iSoftBody* GDP_CreateSoftBody(const SoftBodyDesc& desc)
-    {
-        return g_PhysicsFactory->CreateSoftBody(desc);
-    }
+    //physics::iSoftBody* GDP_CreateSoftBody(const physics::SoftBodyDesc& desc)
+    //{
+    //    return g_PhysicsFactory->CreateSoftBody(desc);
+    //}
 
 
     void GDP_LoadAnimation(const char* name, AnimationData animation)
@@ -374,6 +380,10 @@ namespace gdp
         gBoneShader.BoneMatrices[1] = glGetUniformLocation(shader->id, "BoneMatrices[1]");
         gBoneShader.BoneMatrices[2] = glGetUniformLocation(shader->id, "BoneMatrices[2]");
         gBoneShader.BoneMatrices[3] = glGetUniformLocation(shader->id, "BoneMatrices[3]");
+        gBoneShader.BoneRotationMatrices[0] = glGetUniformLocation(shader->id, "BoneRotationMatrices[0]");
+        gBoneShader.BoneRotationMatrices[1] = glGetUniformLocation(shader->id, "BoneRotationMatrices[1]");
+        gBoneShader.BoneRotationMatrices[2] = glGetUniformLocation(shader->id, "BoneRotationMatrices[2]");
+        gBoneShader.BoneRotationMatrices[3] = glGetUniformLocation(shader->id, "BoneRotationMatrices[3]");
 
         //GDP_LoadTexture(textureId, "assets/textures/MetalPipeWallRusty_basecolor.png");
 

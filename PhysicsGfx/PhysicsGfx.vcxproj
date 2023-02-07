@@ -79,14 +79,14 @@
     <LibraryPath>$(SolutionDir)dev\lib\$(Configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)dev\include;$(SolutionDir)PhysicsInterface;$(SolutionDir)GDPPhysics;$(SolutionDir)dev\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)dev\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)x64\$(Configuration);$(SolutionDir)dev\lib\$(Configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
-    <SourcePath>$(SolutionDir)PhysicsInterface;$(SolutionDir)GDPPhysics;$(VC_SourcePath);</SourcePath>
+    <SourcePath>$(VC_SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)dev\include;$(SolutionDir)PhysicsInterface;$(SolutionDir)GDPPhysics;$(SolutionDir)dev\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)dev\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)x64\$(Configuration);$(SolutionDir)dev\lib\$(Configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
-    <SourcePath>$(SolutionDir)PhysicsInterface;$(SolutionDir)GDPPhysics;$(VC_SourcePath);</SourcePath>
+    <SourcePath>$(VC_SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -124,11 +124,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>PhysicsInterface.lib;GDPPhysics.lib;assimp-vc142-mtd.lib;freeglut_staticd.lib;freeglutd.lib;FreeImaged.lib;freetype.lib;glew32d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysicsInterface.lib;assimp-vc142-mtd.lib;freeglut_staticd.lib;freeglutd.lib;FreeImaged.lib;freetype.lib;glew32d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -139,17 +140,19 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>PhysicsInterface.lib;GDPPhysics.lib;assimp-vc142-mt.lib;freeglut_static.lib;freeglut.lib;FreeImage.lib;freetype.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>PhysicsInterface.lib;assimp-vc142-mt.lib;freeglut_static.lib;freeglut.lib;FreeImage.lib;freetype.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AIDemoWorld.cpp" />
+    <ClCompile Include="AIPathFindingDemoWorld.cpp" />
     <ClCompile Include="AnimationDemoWorld.cpp" />
     <ClCompile Include="AnimationManager.cpp" />
     <ClCompile Include="BoneDemoWorld.cpp" />
@@ -164,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AIDemoWorld.h" />
+    <ClInclude Include="AIPathFindingDemoWorld.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationDemoWorld.h" />
     <ClInclude Include="AnimationManager.h" />
@@ -176,6 +180,7 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="physics.h" />
     <ClInclude Include="PhysicsDemoWorld.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Texture.h" />

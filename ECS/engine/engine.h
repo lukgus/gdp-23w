@@ -34,11 +34,11 @@ public:
 
 	unsigned int CreateEntity();
 
-	template <class T>
-	T* AddComponent(unsigned int entityId)
-	{
-		return m_EntityManager.AddComponent<T>(entityId);
-	}
+	//template <class T>
+	//T* AddComponent(unsigned int entityId)
+	//{
+	//	return m_EntityManager.AddComponent<T>(entityId);
+	//}
 
 	//template <class T>
 	//T* AddComponentSlow(unsigned int entityId)

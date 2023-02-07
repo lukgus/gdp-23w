@@ -8,11 +8,11 @@ Engine g_Engine;
 unsigned int CreateAnEntity()
 {
 	unsigned int entity = g_Engine.CreateEntity();
-	PositionComponent* posCmp = g_Engine.AddComponent<PositionComponent>(entity);
+	//PositionComponent* posCmp = g_Engine.AddComponent<PositionComponent>(entity);
 
-	posCmp->x = 0;
-	posCmp->y = 0;
-	posCmp->z = 0;
+	//posCmp->x = 0;
+	//posCmp->y = 0;
+	//posCmp->z = 0;
 
 	return entity;
 }
@@ -24,6 +24,7 @@ struct PositionVelocityEntityType
 };
 
 std::vector<PositionVelocityEntityType> position_velocity_types;
+
 
 int main(int argc, char** argv)
 {
@@ -41,10 +42,10 @@ int main(int argc, char** argv)
 	g_Engine.Update(0.1f);
 
 
-	VelocityComponent* velCmp = g_Engine.AddComponent<VelocityComponent>(entity);
-	velCmp->vx = 10;
-	velCmp->vy = 0;
-	velCmp->vz = 0;
+	//VelocityComponent* velCmp = g_Engine.AddComponent<VelocityComponent>(entity);
+	//velCmp->vx = 10;
+	//velCmp->vy = 0;
+	//velCmp->vz = 0;
 
 	g_Engine.Update(0.1f);
 	g_Engine.Update(0.1f);

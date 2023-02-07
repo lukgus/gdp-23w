@@ -5,7 +5,7 @@
 
 #include "MeshRenderer.h"
 #include "Animation.h"
-#include <GdpPhysics/interfaces/iCollisionBody.h>
+//#include <physics/interfaces/iCollisionBody.h>
 
 namespace gdp
 {
@@ -18,7 +18,7 @@ namespace gdp
 			, Scale(1.0f)
 			, Rotation(glm::quat(1.0f, 0.0f, 0.0f, 0.0f))
 			, Renderer()
-			, PhysicsBody(nullptr)
+			//, PhysicsBody(nullptr)
 			, Enabled(true)
 			, HasParent(false)
 		{ }
@@ -35,12 +35,13 @@ namespace gdp
 		bool Enabled;
 
 		// Physics & Simulation
-		iCollisionBody* PhysicsBody;
+		//physics::iCollisionBody* PhysicsBody;
 
 		// Animation
 		bool HasParent;
 		bool HasBones;
 		glm::mat4 BoneModelMatrices[4];
+		glm::mat4 BoneRotationMatrices[4];
 		Animation Animation;
 		std::vector<GameObject*> Children;
 	};

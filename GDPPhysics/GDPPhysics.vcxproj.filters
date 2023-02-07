@@ -15,36 +15,36 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GdpPhysics\gdp\PhysicsWorld.h">
+    <ClInclude Include="physics\gdp\CollisionHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GdpPhysics\gdp\RigidBody.h">
+    <ClInclude Include="physics\gdp\PhysicsFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GdpPhysics\gdp\PhysicsFactory.h">
+    <ClInclude Include="physics\gdp\PhysicsWorld.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GdpPhysics\gdp\CollisionHandler.h">
+    <ClInclude Include="physics\gdp\RigidBody.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GdpPhysics\gdp\SoftBody.h">
+    <ClInclude Include="physics\gdp\SoftBody.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GdpPhysics\gdp\PhysicsWorld.cpp">
+    <ClCompile Include="physics\gdp\CollisionHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GdpPhysics\gdp\RigidBody.cpp">
+    <ClCompile Include="physics\gdp\PhysicsFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GdpPhysics\gdp\PhysicsFactory.cpp">
+    <ClCompile Include="physics\gdp\PhysicsWorld.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GdpPhysics\gdp\CollisionHandler.cpp">
+    <ClCompile Include="physics\gdp\RigidBody.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GdpPhysics\gdp\SoftBody.cpp">
+    <ClCompile Include="physics\gdp\SoftBody.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

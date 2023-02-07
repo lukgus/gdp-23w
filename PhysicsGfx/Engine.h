@@ -3,12 +3,7 @@
 #include "GameObject.h"
 #include <vector>
 #include "Model.h"
-
-#include <GdpPhysics/gdp/PhysicsFactory.h>
-#include <GdpPhysics/interfaces/SphereShape.h>
-#include <GdpPhysics/interfaces/PlaneShape.h>
-#include <GdpPhysics/gdp/RigidBody.h>
-#include <GdpPhysics/gdp/SoftBody.h>
+//#include "physics.h"
 
 namespace gdp
 {
@@ -21,9 +16,9 @@ namespace gdp
 
     // Physics
     //bool GDP_CollisionTest(GameObject* a, GameObject* b);
-    iPhysicsWorld* GDP_GetPhysicsWorld();
-    iRigidBody* GDP_CreateRigidBody(const RigidBodyDesc& desc, iShape* shape);
-    iSoftBody* GDP_CreateSoftBody(const SoftBodyDesc& desc);
+    //physics::iPhysicsWorld* GDP_GetPhysicsWorld();
+    //physics::iRigidBody* GDP_CreateRigidBody(const physics::RigidBodyDesc& desc, physics::iShape* shape);
+    //physics::iSoftBody* GDP_CreateSoftBody(const physics::SoftBodyDesc& desc);
 
     // Animation
     void GDP_LoadAnimation(const char* name, AnimationData animation);
