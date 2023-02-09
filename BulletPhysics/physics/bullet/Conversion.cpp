@@ -16,8 +16,6 @@ namespace physics
 		CastFloat(in.y(), &out->y);
 		CastFloat(in.z(), &out->z);
 		CastFloat(in.w(), &out->w);
-
-		return;
 	}
 
 	void CastGLMVec3(const btVector3& in, glm::vec3* out)
@@ -29,21 +27,15 @@ namespace physics
 		CastFloat(in.x(), &out->x);
 		CastFloat(in.y(), &out->y);
 		CastFloat(in.z(), &out->z);
-
-		return;
 	}
 
 	void CastFloat(const btScalar& in, float* out)
 	{
 		*out = in;
-
-		return;
 	}
 
 	void CastGLMMat4(const btTransform& in, glm::mat4* out)
 	{
-
-		return;
 	}
 
 	void CastBulletQuaternion(const glm::quat& in, btQuaternion* out)
@@ -52,8 +44,6 @@ namespace physics
 		out->setY(in.y);
 		out->setZ(in.z);
 		out->setW(in.w);
-
-		return;
 	}
 
 	void CastBulletVector3(const glm::vec3& in, btVector3* out)
@@ -61,8 +51,6 @@ namespace physics
 		out->setX(in.x);
 		out->setY(in.y);
 		out->setZ(in.z);
-
-		return;
 	}
 
 	void CastBulletScalar(const float in, btScalar* out)
@@ -87,7 +75,7 @@ namespace physics
 
 			btVector3 halfExtents;
 
-			//CastBulletVector3(box->GetExtents(), &halfExtents);
+			CastBulletVector3(box->GetHalfExtents(), &halfExtents);
 
 			btBoxShape* btBox = new btBoxShape(halfExtents);
 
@@ -104,7 +92,6 @@ namespace physics
 			CastBulletVector3(plane->GetNormal(), &normal);
 			CastBulletScalar(plane->GetDotProduct(), &planeConstant);
 
-			//btStaticPlaneShape* btPlane = new btStaticPlaneShape(normal, planeConstant);
 			btStaticPlaneShape* btPlane = new btStaticPlaneShape(normal, planeConstant);
 
 			return btPlane;

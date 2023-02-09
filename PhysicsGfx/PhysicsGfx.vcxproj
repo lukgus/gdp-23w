@@ -71,22 +71,24 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)dev\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)external\bullet3\src\extern\bullet;$(SolutionDir)dev\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>$(SolutionDir)dev\lib\$(Configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <SourcePath>$(SolutionDir)external\bullet3\src\extern\bullet;$(VC_SourcePath);</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)dev\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)external\bullet3\src\extern\bullet;$(SolutionDir)dev\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>$(SolutionDir)dev\lib\$(Configuration);$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <SourcePath>$(SolutionDir)external\bullet3\src\extern\bullet;$(VC_SourcePath);</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)dev\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)external\bullet3\src\extern\bullet;$(SolutionDir)BulletPhysics;$(SolutionDir)external\PhysX\physx\include;$(SolutionDir)GDPPhysics;$(SolutionDir)PhysXPhysics;$(SolutionDir)PhysicsInterface;$(SolutionDir)dev\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)x64\$(Configuration);$(SolutionDir)dev\lib\$(Configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
-    <SourcePath>$(VC_SourcePath)</SourcePath>
+    <SourcePath>$(SolutionDir)external\bullet3\src\extern\bullet;$(SolutionDir)BulletPhysics;$(SolutionDir)external\PhysX\physx\include;$(SolutionDir)GDPPhysics;$(SolutionDir)PhysXPhysics;$(SolutionDir)PhysicsInterface;$(VC_SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)dev\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)external\bullet3\src\extern\bullet;$(SolutionDir)external\PhysX\physx\include;$(SolutionDir)BulletPhysics;$(SolutionDir)GDPPhysics;$(SolutionDir)PhysXPhysics;$(SolutionDir)PhysicsInterface;$(SolutionDir)dev\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)x64\$(Configuration);$(SolutionDir)dev\lib\$(Configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
-    <SourcePath>$(VC_SourcePath)</SourcePath>
+    <SourcePath>$(SolutionDir)external\bullet3\src\extern\bullet;$(SolutionDir)external\PhysX\physx\include;$(SolutionDir)BulletPhysics;$(SolutionDir)GDPPhysics;$(SolutionDir)PhysXPhysics;$(SolutionDir)PhysicsInterface;$(VC_SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -190,6 +192,11 @@
   <ItemGroup>
     <None Include="assets\shaders\BoneShader.fragment.glsl" />
     <None Include="assets\shaders\BoneShader.vertex.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PhysicsInterface\PhysicsInterface.vcxproj">
+      <Project>{4e92b502-dc6d-413e-b929-ee8e9ec7f78b}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

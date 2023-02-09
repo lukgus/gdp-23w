@@ -1,24 +1,28 @@
+#include "pch.h"
 #include "PhysicsFactory.h"
 
 #include "PhysicsWorld.h"
+
 #include "RigidBody.h"
 #include "SoftBody.h"
 
 namespace physics
 {
-	PhysicsFactory::PhysicsFactory()
+	PhysicsFactory::PhysicsFactory(void)
 		: iPhysicsFactory()
 	{
 		printf("Created Bullet Physics Factory!\n");
 	}
 
-	PhysicsFactory::~PhysicsFactory()
-	{ 
+	PhysicsFactory::~PhysicsFactory(void)
+	{
 	}
 
-	iPhysicsWorld* PhysicsFactory::CreateWorld()
+	iPhysicsWorld* PhysicsFactory::CreateWorld(void)
 	{
-		return new PhysicsWorld();
+		PhysicsWorld* AWholeNewWorld = new PhysicsWorld();
+
+		return AWholeNewWorld;
 	}
 
 	iRigidBody* PhysicsFactory::CreateRigidBody(const RigidBodyDesc& desc, iShape* shape)
@@ -30,4 +34,4 @@ namespace physics
 	{
 		return new SoftBody(desc);
 	}
-}
+};

@@ -1,26 +1,21 @@
 #include "RigidBody.h"
-
 #include "Conversion.h"
+#include <math.h>
 
-#include <bullet/btBulletCollisionCommon.h>
 #include <bullet/btBulletDynamicsCommon.h>
 
 namespace physics
 {
-	RigidBody* RigidBody::Cast(iCollisionBody* body)
-	{
-		return dynamic_cast<RigidBody*>(body);
-	}
-
 	RigidBody::RigidBody(const RigidBodyDesc& desc, iShape* shape)
+		: iRigidBody()
 	{
-		btQuaternion ori;
-		btVector3 pos;
+		btQuaternion rotation;
+		btVector3 position;
 
-		CastBulletQuaternion(desc.rotation, &ori);
-		CastBulletVector3(desc.position, &pos);
+		CastBulletQuaternion(desc.rotation, &rotation);
+		CastBulletVector3(desc.position, &position);
 
-		btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(ori, pos));
+		btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(rotation, position));
 		btVector3 inertia(0, 0, 0);
 		btCollisionShape* bulletShape = CastBulletShape(shape);
 
@@ -31,7 +26,7 @@ namespace physics
 
 		btRigidBody::btRigidBodyConstructionInfo bodyCI(desc.mass, motionState, bulletShape, inertia);
 
-		m_BulletBody = new btRigidBody(bodyCI);
+		m_BulletRigidBody = new btRigidBody(bodyCI);
 
 		btVector3 btAngularFactor;
 		btVector3 btLinearFactor;
@@ -39,58 +34,46 @@ namespace physics
 		CastBulletVector3(desc.angularFactor, &btAngularFactor);
 		CastBulletVector3(desc.linearFactor, &btLinearFactor);
 
-		m_BulletBody->setAngularFactor(btAngularFactor);
-		m_BulletBody->setLinearFactor(btLinearFactor);
-
-		return;
+		m_BulletRigidBody->setAngularFactor(btAngularFactor);
+		m_BulletRigidBody->setLinearFactor(btLinearFactor);
 	}
 
-	RigidBody::~RigidBody(void)
+	RigidBody::~RigidBody()
+	{ }
+
+	RigidBody* RigidBody::Cast(iCollisionBody* body)
 	{
+		return dynamic_cast<RigidBody*>(body);
 	}
 
-	bool RigidBody::IsStatic(void) const
+	void RigidBody::GetPosition(Vector3& position)
 	{
-		return m_BulletBody->isStaticObject();
+		CastGLMVec3(m_BulletRigidBody->getCenterOfMassPosition(), &position);
 	}
 
-	iShape* RigidBody::GetShape(void)
+	void RigidBody::SetPosition(const Vector3& position)
 	{
-		return NULL;
+		// No.
 	}
 
-	//void RigidBody::GetWorldTransform(glm::mat4& transformOut)
-	//{
-	//}
-
-	void RigidBody::GetPosition(glm::vec3& positionOut)
+	void RigidBody::GetRotation(Quaternion& rotation)
 	{
-		CastGLMVec3(m_BulletBody->getCenterOfMassPosition(), &positionOut);
+		CastGLMQuat(m_BulletRigidBody->getOrientation(), &rotation);
 	}
 
-	void RigidBody::SetPosition(const glm::vec3& positionIn)										   
+	void RigidBody::SetRotation(const Quaternion& rotation)
 	{
-		// Can't.
+		// No.
 	}
 
-	void RigidBody::GetRotation(glm::quat& orientationOut)
-	{
-		CastGLMQuat(m_BulletBody->getOrientation(), &orientationOut);
-	}
-
-	void RigidBody::SetRotation(const glm::quat& orientationIn)
-	{
-		// Can't
-	}
-
-	void RigidBody::ApplyForce(const glm::vec3& force)
+	void RigidBody::ApplyForce(const Vector3& force)
 	{
 		btVector3 btForce;
 		CastBulletVector3(force, &btForce);
-		m_BulletBody->applyCentralForce(btForce);
+		m_BulletRigidBody->applyCentralForce(btForce);
 	}
 
-	void RigidBody::ApplyForceAtPoint(const glm::vec3& force, const glm::vec3& relativePoint)
+	void RigidBody::ApplyForceAtPoint(const Vector3& force, const Vector3& relativePoint)
 	{
 		btVector3 btForce;
 		btVector3 btForceAtPoint;
@@ -98,19 +81,17 @@ namespace physics
 		CastBulletVector3(force, &btForce);
 		CastBulletVector3(relativePoint, &btForceAtPoint);
 
-		m_BulletBody->applyForce(btForce, btForceAtPoint);
+		m_BulletRigidBody->applyForce(btForce, btForceAtPoint);
 	}
 
-	void RigidBody::ApplyImpulse(const glm::vec3& impulse)
+	void RigidBody::ApplyImpulse(const Vector3& impulse)
 	{
 		btVector3 btImpulse;
-
 		CastBulletVector3(impulse, &btImpulse);
-
-		m_BulletBody->applyCentralImpulse(btImpulse);
+		m_BulletRigidBody->applyCentralImpulse(btImpulse);
 	}
 
-	void RigidBody::ApplyImpulseAtPoint(const glm::vec3& impulse, const glm::vec3& relativePoint)
+	void RigidBody::ApplyImpulseAtPoint(const Vector3& impulse, const Vector3& relativePoint)
 	{
 		btVector3 btImpulse;
 		btVector3 btImpulseAtPoint;
@@ -118,25 +99,24 @@ namespace physics
 		CastBulletVector3(impulse, &btImpulse);
 		CastBulletVector3(relativePoint, &btImpulseAtPoint);
 
-		m_BulletBody->applyImpulse(btImpulse, btImpulseAtPoint);
+		m_BulletRigidBody->applyImpulse(btImpulse, btImpulseAtPoint);
 	}
 
-	void RigidBody::ApplyTorque(const glm::vec3& torque)
+	void RigidBody::ApplyTorque(const Vector3& torque)
 	{
 		btVector3 btTorque;
 
 		CastBulletVector3(torque, &btTorque);
 
-		m_BulletBody->applyTorque(btTorque);
+		m_BulletRigidBody->applyTorque(btTorque);
 	}
 
-	void RigidBody::ApplyTorqueImpulse(const glm::vec3& torqueImpulse)
+	void RigidBody::ApplyTorqueImpulse(const Vector3& torqueImpulse)
 	{
 		btVector3 btTorqueImpulse;
 
 		CastBulletVector3(torqueImpulse, &btTorqueImpulse);
 
-		m_BulletBody->applyTorqueImpulse(btTorqueImpulse);
+		m_BulletRigidBody->applyTorqueImpulse(btTorqueImpulse);
 	}
-
-};
+}

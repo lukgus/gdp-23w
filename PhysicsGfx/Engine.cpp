@@ -21,13 +21,11 @@
 
 #include "GL.h"
 
-//#include <physics/gdp/PhysicsFactory.h>
-
 namespace gdp
 {
     // Initialize a Physics Factory
-   // physics::iPhysicsFactory* g_PhysicsFactory;
-    //physics::iPhysicsWorld* g_PhysicsWorld;
+    physics::iPhysicsFactory* g_PhysicsFactory;
+    physics::iPhysicsWorld* g_PhysicsWorld;
 
     // Managers
     AnimationManager g_AnimationManager;
@@ -113,7 +111,7 @@ namespace gdp
         if (elapsedTimeInSeconds > 0.1f)
             elapsedTimeInSeconds = 0.1f;
 
-       // g_PhysicsWorld->TimeStep(elapsedTimeInSeconds);
+        g_PhysicsWorld->TimeStep(elapsedTimeInSeconds);
         g_AnimationManager.Update(gGameObjectVec, elapsedTimeInSeconds);
 
         Updatecallback(elapsedTimeInSeconds);
@@ -143,38 +141,38 @@ namespace gdp
         glm::mat4 ScaleMatrix = glm::scale(glm::mat4(1.0f), go->Scale);
         glm::mat4 ModelMatrix = TranslationMatrix * RotationMatrix * ScaleMatrix;
 
-        if (go->HasBones)
-        {
-            ShaderProgram* shader;
-            shader = GetShaderProgram(gBoneShaderId);
-            glUseProgram(shader->id);
-            glUniformMatrix4fv(gBoneShader.ProjectionMatrix, 1, GL_FALSE, glm::value_ptr(gProjectionMatrix));
-            glUniformMatrix4fv(gBoneShader.ViewMatrix, 1, GL_FALSE, glm::value_ptr(gViewMatrix));
+        //if (go->HasBones)
+        //{
+        //    ShaderProgram* shader;
+        //    shader = GetShaderProgram(gBoneShaderId);
+        //    glUseProgram(shader->id);
+        //    glUniformMatrix4fv(gBoneShader.ProjectionMatrix, 1, GL_FALSE, glm::value_ptr(gProjectionMatrix));
+        //    glUniformMatrix4fv(gBoneShader.ViewMatrix, 1, GL_FALSE, glm::value_ptr(gViewMatrix));
 
-            Material* material = GetMaterial(go->Renderer.MaterialId);
-            Texture* texture = GetTexture(material->TextureId);
+        //    Material* material = GetMaterial(go->Renderer.MaterialId);
+        //    Texture* texture = GetTexture(material->TextureId);
 
-            glActiveTexture(texture->glEnum);
-            glBindTexture(GL_TEXTURE_2D, texture->id);
-            glUniform1i(gBoneShader.Texture00, texture->id - 1);
+        //    glActiveTexture(texture->glEnum);
+        //    glBindTexture(GL_TEXTURE_2D, texture->id);
+        //    glUniform1i(gBoneShader.Texture00, texture->id - 1);
 
-            glUniform3fv(gBoneShader.Color, 1, glm::value_ptr(material->Color));
+        //    glUniform3fv(gBoneShader.Color, 1, glm::value_ptr(material->Color));
 
-            glUniformMatrix4fv(gBoneShader.ModelMatrix, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
-            glUniformMatrix4fv(gBoneShader.RotationMatrix, 1, GL_FALSE, glm::value_ptr(RotationMatrix));
+        //    glUniformMatrix4fv(gBoneShader.ModelMatrix, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+        //    glUniformMatrix4fv(gBoneShader.RotationMatrix, 1, GL_FALSE, glm::value_ptr(RotationMatrix));
 
-            for (int i = 0; i < 4; i++)
-            {
-                glUniformMatrix4fv(gBoneShader.BoneMatrices[i], 1, GL_FALSE, glm::value_ptr(go->BoneModelMatrices[i]));
-                glUniformMatrix4fv(gBoneShader.BoneRotationMatrices[i], 1, GL_FALSE, glm::value_ptr(go->BoneRotationMatrices[i]));
-            }
+        //    for (int i = 0; i < 4; i++)
+        //    {
+        //        glUniformMatrix4fv(gBoneShader.BoneMatrices[i], 1, GL_FALSE, glm::value_ptr(go->BoneModelMatrices[i]));
+        //        glUniformMatrix4fv(gBoneShader.BoneRotationMatrices[i], 1, GL_FALSE, glm::value_ptr(go->BoneRotationMatrices[i]));
+        //    }
 
-            Model* model = GetModel(go->Renderer.MeshId);
-            glBindVertexArray(model->Vbo);
-            glDrawElements(GL_TRIANGLES, model->NumTriangles * 3, GL_UNSIGNED_INT, (GLvoid*)0);
-        }
-        else
-        {
+        //    Model* model = GetModel(go->Renderer.MeshId);
+        //    glBindVertexArray(model->Vbo);
+        //    glDrawElements(GL_TRIANGLES, model->NumTriangles * 3, GL_UNSIGNED_INT, (GLvoid*)0);
+        //}
+        //else
+        //{
             ShaderProgram* shader;
             shader = GetShaderProgram(gSimpleShaderId);
             glUseProgram(shader->id);
@@ -197,7 +195,7 @@ namespace gdp
             Model* model = GetModel(go->Renderer.MeshId);
             glBindVertexArray(model->Vbo);
             glDrawElements(GL_TRIANGLES, model->NumTriangles * 3, GL_UNSIGNED_INT, (GLvoid*)0);
-        }
+        //}
 
 
         for (int i = 0; i < go->Children.size(); i++)
@@ -242,10 +240,20 @@ namespace gdp
 
     void GLUTCALLBACK_KeyboardFunc(unsigned char key, int x, int y) {
         gKeyStates[key] = true;
+
+
     }
 
     void GLUTCALLBACK_KeyboardUpFunc(unsigned char key, int x, int y) {
         gKeyStates[key] = false;
+    }
+
+    void GLUTCALLBACK_SpecialFunc(int key, int x, int y) {
+        printf("Special: %d\n", key);
+    }
+
+    void GLUTCALLBACK_SpecialUpFunc(int key, int x, int y) {
+        printf("Special: %d\n", key);
     }
 
     void CALLBACK_MouseMotion(int x, int y) {
@@ -277,8 +285,8 @@ namespace gdp
         );
 
         // Create physics factory and the world
-        //g_PhysicsFactory = new PhysicsFactoryType();
-       // g_PhysicsWorld = g_PhysicsFactory->CreateWorld();
+        g_PhysicsFactory = new PhysicsFactoryType();
+        g_PhysicsWorld = g_PhysicsFactory->CreateWorld();
     }
 
     void GDP_Destroy() {
@@ -296,6 +304,10 @@ namespace gdp
 
         glutKeyboardFunc(GLUTCALLBACK_KeyboardFunc);
         glutKeyboardUpFunc(GLUTCALLBACK_KeyboardUpFunc);
+
+        glutSpecialFunc(GLUTCALLBACK_SpecialFunc);
+        glutSpecialUpFunc(GLUTCALLBACK_SpecialUpFunc);
+
         glutMouseFunc(CALLBACK_MouseButton);
         glutMotionFunc(CALLBACK_MouseMotion);
 
@@ -315,20 +327,20 @@ namespace gdp
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
-    //physics::iPhysicsWorld* GDP_GetPhysicsWorld()
-    //{
-    //    return g_PhysicsWorld;
-    //}
+    physics::iPhysicsWorld* GDP_GetPhysicsWorld()
+    {
+        return g_PhysicsWorld;
+    }
 
-    //physics::iRigidBody* GDP_CreateRigidBody(const physics::RigidBodyDesc& desc, physics::iShape* shape)
-    //{
-    //    return g_PhysicsFactory->CreateRigidBody(desc, shape);
-    //}
+    physics::iRigidBody* GDP_CreateRigidBody(const physics::RigidBodyDesc& desc, physics::iShape* shape)
+    {
+        return g_PhysicsFactory->CreateRigidBody(desc, shape);
+    }
 
-    //physics::iSoftBody* GDP_CreateSoftBody(const physics::SoftBodyDesc& desc)
-    //{
-    //    return g_PhysicsFactory->CreateSoftBody(desc);
-    //}
+    physics::iSoftBody* GDP_CreateSoftBody(const physics::SoftBodyDesc& desc)
+    {
+        return g_PhysicsFactory->CreateSoftBody(desc);
+    }
 
 
     void GDP_LoadAnimation(const char* name, AnimationData animation)

@@ -1,7 +1,4 @@
 #pragma once
-#include <glm/mat4x4.hpp>
-#include <glm/vec3.hpp>
-#include <glm/gtc/quaternion.hpp>
 
 #include <physics/interfaces/iRigidBody.h>
 #include <physics/interfaces/RigidBodyDesc.h>
@@ -9,10 +6,8 @@
 
 #include <bullet/btBulletDynamicsCommon.h>
 
-
 namespace physics
 {
-	class CollisionHandler;
 	class RigidBody : public iRigidBody
 	{
 	public:
@@ -21,35 +16,29 @@ namespace physics
 
 		static RigidBody* Cast(iCollisionBody* body);
 
-		iShape* GetShape(void);
+		virtual void GetPosition(Vector3& position) override;
+		virtual void SetPosition(const Vector3& position) override;
 
-		bool IsStatic(void) const;
+		virtual void GetRotation(Quaternion& rotation) override;
+		virtual void SetRotation(const Quaternion& rotation) override;
 
-		//virtual void GetWorldTransform(glm::mat4& transformOut) override;
+		virtual void ApplyForce(const Vector3& force) override;
+		virtual void ApplyImpulse(const Vector3& impulse) override;
 
-		virtual void GetPosition(glm::vec3& positionOut) override;
-		virtual void SetPosition(const glm::vec3& positionIn) override;
+		virtual void ApplyForceAtPoint(const Vector3& force, const Vector3& relativePoint) override;
+		virtual void ApplyImpulseAtPoint(const Vector3& impulse, const Vector3& relativePoint) override;
 
-		virtual void GetRotation(glm::quat& orientationOut) override;
-		virtual void SetRotation(const glm::quat& orientationIn) override;
+		virtual void ApplyTorque(const Vector3& torque) override;
+		virtual void ApplyTorqueImpulse(const Vector3& torqueImpulse) override;
 
-		virtual void ApplyForce(const glm::vec3& force) override;
-		virtual void ApplyForceAtPoint(const glm::vec3& force, const glm::vec3& relativePoint) override;
-
-		virtual void ApplyImpulse(const glm::vec3& impulse) override;
-		virtual void ApplyImpulseAtPoint(const glm::vec3& impulse, const glm::vec3& relativePoint) override;
-
-		virtual void ApplyTorque(const glm::vec3& torque) override;
-		virtual void ApplyTorqueImpulse(const glm::vec3& torqueImpulse) override;
-
-		btRigidBody* GetBulletBody(void) { return m_BulletBody; }
-	protected:
-
+		btRigidBody* GetBulletBody(void) { return m_BulletRigidBody; }
 	private:
-		btRigidBody* m_BulletBody;
 
-		RigidBody(const RigidBody& other) { ; }
-		RigidBody& operator=(const RigidBody& other) { return *this; }
+		btRigidBody* m_BulletRigidBody;
 
+		RigidBody(const RigidBody&) { }
+		RigidBody& operator=(const RigidBody&) {
+			return *this;
+		}
 	};
-};
+}

@@ -1,6 +1,9 @@
 #include "BoneDemoWorld.h"
 #include "Animation.h"
 
+#include <map>
+#include <vector>
+
 namespace gdp
 {
 	glm::mat4 CreateModelMatrix(const glm::mat4& parentModelMatrix, const glm::vec3& translate, const glm::quat& rotate)
@@ -39,6 +42,11 @@ namespace gdp
 
 	void BoneDemoWorld::Destroy()
 	{
+	}
+
+	void KeyPress(char key, bool state)
+	{
+
 	}
 
 	void BoneDemoWorld::Update(float dt)

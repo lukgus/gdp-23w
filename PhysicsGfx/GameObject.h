@@ -5,7 +5,7 @@
 
 #include "MeshRenderer.h"
 #include "Animation.h"
-//#include <physics/interfaces/iCollisionBody.h>
+#include <physics/interfaces/iCollisionBody.h>
 
 namespace gdp
 {
@@ -35,7 +35,7 @@ namespace gdp
 		bool Enabled;
 
 		// Physics & Simulation
-		//physics::iCollisionBody* PhysicsBody;
+		physics::iCollisionBody* PhysicsBody;
 
 		// Animation
 		bool HasParent;

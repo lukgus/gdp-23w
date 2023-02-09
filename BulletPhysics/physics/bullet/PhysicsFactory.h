@@ -1,27 +1,20 @@
 #ifndef PhysicsFactory_H
 #define PhysicsFactory_H
 
-// Interface
 #include <physics/interfaces/iPhysicsFactory.h>
-#include <physics/interfaces/iRigidBody.h>
-
-// Bullet
-#include <bullet/btBulletCollisionCommon.h>
-#include <bullet/btBulletDynamicsCommon.h>
 
 namespace physics
 {
 	class PhysicsFactory : public iPhysicsFactory
 	{
 	public:
-		PhysicsFactory(void);
-		virtual ~PhysicsFactory(void);
+		PhysicsFactory();
+		virtual ~PhysicsFactory();
 
-		virtual iPhysicsWorld* CreateWorld(void);
-
-		virtual iRigidBody* CreateRigidBody(const RigidBodyDesc& desc, iShape* shape);
-		virtual iSoftBody* CreateSoftBody(const SoftBodyDesc& desc);
+		virtual iPhysicsWorld* CreateWorld() override;
+		virtual iRigidBody* CreateRigidBody(const RigidBodyDesc& desc, iShape* shape) override;
+		virtual iSoftBody* CreateSoftBody(const SoftBodyDesc& desc) override;
 	};
-};
+}
 
 #endif

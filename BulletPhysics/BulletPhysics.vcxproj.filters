@@ -24,10 +24,10 @@
     <ClInclude Include="physics\bullet\RigidBody.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="physics\bullet\Conversion.h">
+    <ClInclude Include="physics\bullet\SoftBody.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="physics\bullet\SoftBody.h">
+    <ClInclude Include="physics\bullet\Conversion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -41,10 +41,10 @@
     <ClCompile Include="physics\bullet\RigidBody.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="physics\bullet\Conversion.cpp">
+    <ClCompile Include="physics\bullet\SoftBody.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="physics\bullet\SoftBody.cpp">
+    <ClCompile Include="physics\bullet\Conversion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

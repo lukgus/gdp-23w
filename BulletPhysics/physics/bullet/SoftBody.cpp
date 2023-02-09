@@ -1,24 +1,20 @@
 #include "SoftBody.h"
 
-#include <algorithm>
-
-#include <physics\interfaces\iShape.h>
-
-#include <cfloat>
+#include <physics/interfaces/SphereShape.h>
 
 namespace physics
 {
-	SoftBody* SoftBody::Cast(iCollisionBody* body)
-	{
-		return dynamic_cast<SoftBody*>(body);
-	}
-
 	SoftBody::SoftBody(const SoftBodyDesc& desc)
 	{
 	}
 
-	SoftBody::~SoftBody(void)
+	SoftBody::~SoftBody()
 	{
+	}
+
+	SoftBody* SoftBody::Cast(iCollisionBody* body)
+	{
+		return dynamic_cast<SoftBody*>(body);
 	}
 
 	unsigned int SoftBody::GetNumNodes()
@@ -26,9 +22,9 @@ namespace physics
 		return 0;
 	}
 
-	void SoftBody::GetNodePosition(unsigned int nodeIndex, glm::vec3& nodePositionOut)
+	void SoftBody::GetNodePosition(unsigned int nodeIndex, glm::vec3& nodePosition)
 	{
-		nodePositionOut = glm::vec3(0.f);
+		nodePosition = glm::vec3(0.f);
 	}
 
-};
+}

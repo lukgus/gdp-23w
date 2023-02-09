@@ -1,9 +1,7 @@
 #pragma once
-#include <vector>
 
-
-#include <physics\interfaces\iSoftBody.h>
-#include <physics\interfaces\SoftBodyDesc.h>
+#include <physics/interfaces/iSoftBody.h>
+#include <physics/interfaces/SoftBodyDesc.h>
 
 namespace physics
 {
@@ -11,12 +9,17 @@ namespace physics
 	{
 	public:
 		SoftBody(const SoftBodyDesc& desc);
-		virtual ~SoftBody(void);
+		virtual ~SoftBody();
 
 		static SoftBody* Cast(iCollisionBody* body);
 
 		virtual unsigned int GetNumNodes();
-		virtual void GetNodePosition(unsigned int nodeIndex, glm::vec3& nodePositionOut);
-	};
-};
+		virtual void GetNodePosition(unsigned int nodeIndex, glm::vec3& nodePosition);
 
+	private:
+		SoftBody(const SoftBody& other) { }
+		SoftBody& operator=(const SoftBody& other0) {
+			return *this;
+		}
+	};
+}
