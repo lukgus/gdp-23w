@@ -64,6 +64,9 @@ namespace gdp
 
 	struct Animation
 	{
+		// Quadriped	4 legged animal
+		// biped		Humanoid
+		// BoneHierarchy
 		std::string AnimationType;
 		float AnimationTime;
 		bool IsPlaying;
