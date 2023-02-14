@@ -1,5 +1,6 @@
 #include "PhysicsWorld.h"
 #include "Conversion.h"
+#include "DebugDrawer.h"
 
 namespace physics
 {
@@ -12,6 +13,11 @@ namespace physics
 		m_Solver = new btSequentialImpulseConstraintSolver;
 		m_DynamicsWorld = new btDiscreteDynamicsWorld(m_Dispatcher, 
 			m_OverlappingPairCache, m_Solver, m_CollisionConfiguration);
+
+		m_DebugDrawer = new DebugDrawer(7);
+		m_DynamicsWorld->setDebugDrawer(m_DebugDrawer);
+		int debugMode = 1;
+		m_DynamicsWorld->getDebugDrawer()->setDebugMode(debugMode);
 	}
 
 	PhysicsWorld::~PhysicsWorld()
@@ -45,5 +51,10 @@ namespace physics
 	void PhysicsWorld::TimeStep(float dt)
 	{
 		m_DynamicsWorld->stepSimulation(dt);
+	}
+
+	void PhysicsWorld::DebugDraw()
+	{
+		m_DynamicsWorld->debugDrawWorld();
 	}
 }

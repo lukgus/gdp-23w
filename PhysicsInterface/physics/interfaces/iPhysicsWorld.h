@@ -5,6 +5,17 @@
 
 namespace physics
 {
+	class iCollisionListener
+	{
+	public:
+		virtual ~iCollisionListener() {}
+
+		virtual void NotifyCollision(iCollisionBody* bodyA, iCollisionBody* bodyB) = 0;
+
+	protected:
+		iCollisionListener() {}
+	};
+
 	class iPhysicsWorld
 	{
 	public:
@@ -16,6 +27,9 @@ namespace physics
 		virtual void RemoveBody(iCollisionBody* body) = 0;
 
 		virtual void TimeStep(float dt) = 0;
+
+		virtual void DebugDraw() { }
+		virtual void RegisterCollisionListener(iCollisionListener* listener) = 0;
 
 	protected:
 		iPhysicsWorld() {}

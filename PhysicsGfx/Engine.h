@@ -20,6 +20,9 @@ namespace gdp
     physics::iRigidBody* GDP_CreateRigidBody(const physics::RigidBodyDesc& desc, physics::iShape* shape);
     physics::iSoftBody* GDP_CreateSoftBody(const physics::SoftBodyDesc& desc);
 
+    // Assimp Loading
+    void GDP_LoadFBXFile(unsigned int& id, std::string& animationName, const std::string& filename);
+
     // Animation
     void GDP_LoadAnimation(const char* name, AnimationData animation);
 

@@ -19,6 +19,8 @@ namespace gdp
 
 	struct PositionKeyFrame
 	{
+		PositionKeyFrame()
+			: value(0.f), time(0.f), type(None) { }
 		PositionKeyFrame(glm::vec3 value, float time, EasingType type = None)
 			: value(value), time(time), type(type) { }
 
@@ -29,6 +31,8 @@ namespace gdp
 
 	struct ScaleKeyFrame
 	{
+		ScaleKeyFrame()
+			: value(0.f), time(0.f), type(None) { }
 		ScaleKeyFrame(glm::vec3 value, float time, EasingType type = None)
 			: value(value), time(time), type(type) { }
 
@@ -39,7 +43,9 @@ namespace gdp
 
 	struct RotationKeyFrame
 	{
-		RotationKeyFrame(glm::quat value, float time, bool useSlerp)
+		RotationKeyFrame()
+			: value(1.0f, 0.f, 0.f, 0.f), time(0.f), useSlerp(true) { }
+		RotationKeyFrame(glm::quat value, float time, bool useSlerp = true)
 			: value(value), time(time), useSlerp(useSlerp) { }
 		glm::quat value;
 		float time;
@@ -51,7 +57,9 @@ namespace gdp
 		std::vector<PositionKeyFrame> PositionKeyFrames;
 		std::vector<ScaleKeyFrame> ScaleKeyFrames;
 		std::vector<RotationKeyFrame> RotationKeyFrames;
-		float Duration;
+		std::string Name;
+		double Duration;
+		double TicksPerSecond;
 	};
 
 	struct Animation

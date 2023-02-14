@@ -18,8 +18,6 @@ namespace gdp
 		LoadAssets();
 		LoadAnimations();
 
-
-
 		m_PlayerBall = CreateBall(glm::vec3(0.f), 1.f);
 
 		GameObject* childBall = GDP_CreateGameObject();

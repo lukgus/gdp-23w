@@ -30,6 +30,12 @@
     <ClInclude Include="physics\bullet\Conversion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="physics\bullet\DebugDrawer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\bullet\CheckGLError.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="physics\bullet\PhysicsFactory.cpp">
@@ -45,6 +51,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="physics\bullet\Conversion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\bullet\DebugDrawer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\bullet\CheckGLError.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

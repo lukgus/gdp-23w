@@ -119,7 +119,11 @@ namespace physics
 
 		// A list of collisions..
 		// Here we can collision callbacks.
-
+		for (int i = 0; i < collisions.size(); i++)
+		{
+			CollidingBodies& collision  = collisions[i];
+			m_CollisionListener->NotifyCollision(collision.bodyA, collision.bodyB);
+		}
 
 		// Step #2 : Verlet
 		// velocity += acceleration * (dt/2)

@@ -40,8 +40,10 @@ namespace gdp
 		// Animation
 		bool HasParent;
 		bool HasBones;
-		glm::mat4 BoneModelMatrices[4];
-		glm::mat4 BoneRotationMatrices[4];
+		glm::mat4 BoneModelMatrices[66];
+		glm::mat4 BoneRotationMatrices[66];
+
+
 		Animation Animation;
 		std::vector<GameObject*> Children;
 	};

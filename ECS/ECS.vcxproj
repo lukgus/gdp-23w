@@ -161,6 +161,7 @@
     <ClInclude Include="graphics\window\windowmanager.h" />
     <ClInclude Include="physics\bodies\collisionbody.h" />
     <ClInclude Include="physics\bodies\softbody.h" />
+    <ClInclude Include="physics\CollisionListener.h" />
     <ClInclude Include="physics\components\rigidbodycomponent.h" />
     <ClInclude Include="components\velocitycomponent.h" />
     <ClInclude Include="engine\ecs\Component.h" />
@@ -169,9 +170,11 @@
     <ClInclude Include="engine\engine.h" />
     <ClInclude Include="engine\entity\entitymanager.h" />
     <ClInclude Include="physics\physicsfactory.h" />
+    <ClInclude Include="physics\PhysicsSystem.h" />
     <ClInclude Include="physics\physicsworld.h" />
     <ClInclude Include="physics\bodies\rigidbody.h" />
     <ClInclude Include="physics\shapes\shape.h" />
+    <ClInclude Include="physics\utils\PhysicsUtils.h" />
     <ClInclude Include="systems\motionsystem.h" />
     <ClInclude Include="graphics\rendersystem.h" />
     <ClInclude Include="systems\scriptsystem.h" />
@@ -204,9 +207,12 @@
     <ClCompile Include="engine\entity\EntityManager.cpp" />
     <ClCompile Include="physics\bodies\collisionbody.cpp" />
     <ClCompile Include="physics\bodies\softbody.cpp" />
+    <ClCompile Include="physics\components\RigidBodyComponent.cpp" />
     <ClCompile Include="physics\physicsfactory.cpp" />
+    <ClCompile Include="physics\PhysicsSystem.cpp" />
     <ClCompile Include="physics\physicsworld.cpp" />
     <ClCompile Include="physics\bodies\rigidbody.cpp" />
+    <ClCompile Include="physics\utils\PhysicsUtils.cpp" />
     <ClCompile Include="systems\motionsystem.cpp" />
     <ClCompile Include="world\world.cpp" />
     <ClCompile Include="world\worldmanager.cpp" />

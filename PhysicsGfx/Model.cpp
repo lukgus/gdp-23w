@@ -1,4 +1,5 @@
 #include "Model.h"
+#include "vertex_types.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -7,6 +8,10 @@
 namespace gdp
 {
 	Assimp::Importer m_AssimpImporter;
+
+	Model::Model()
+	{
+	}
 
 	Model::Model(const std::vector<glm::vec3>& vertices, const std::vector<int>& triangles)
 	{

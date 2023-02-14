@@ -2,7 +2,7 @@
 
 #include "GL.h"
 #include "Model.h"
-
+#include "vertex_types.h"
 #include "physics.h"
 
 #include <physics/interfaces/SphereShape.h>
@@ -44,7 +44,7 @@ namespace gdp
 
 	void PhysicsDemoWorld::Update(float dt)
 	{
-		SetCameraPosition(glm::vec3(0, 5, 36));
+		SetCameraPosition(glm::vec3(0, 12, 30));
 		SetCameraFacingDirection(glm::vec3(0, -.2, -0.8));
 
 		//UpdateDebugSpheres();

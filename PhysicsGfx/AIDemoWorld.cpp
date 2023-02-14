@@ -1,5 +1,4 @@
 #include "AIDemoWorld.h"
-#include "DebugRender.h"
 
 //#define DISPLAY_DEBUG_SPHERES 
 

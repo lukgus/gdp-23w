@@ -1,5 +1,4 @@
 #include "AIPathFindingDemoWorld.h"
-#include "DebugRender.h"
 
 #include <assert.h>
 

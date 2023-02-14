@@ -9,6 +9,21 @@ struct Entity
 	unsigned int id;
 	std::vector<Component*> components;
 
+	void Disable()
+	{
+		for (int i = 0; i < components.size(); i++)
+		{
+			components[i]->Disable();
+		}
+	}
+	void Enable()
+	{
+		for (int i = 0; i < components.size(); i++)
+		{
+			components[i]->Enable();
+		}
+	}
+
 	template <class T>
 	T* GetComponentByType()
 	{
@@ -45,6 +60,7 @@ struct Entity
 		}
 
 		T* newComponent = new T();
+		newComponent->Enable();
 		components.push_back(newComponent);
 		return newComponent;
 	}
@@ -58,6 +74,7 @@ struct Entity
 			T* component = dynamic_cast<T*>(*it);
 			if (component != nullptr)
 			{
+				newComponent->Disable();
 				components.erase(it);
 				return *it;
 			}

@@ -18,6 +18,14 @@
 #include "Window.h"
 #include "Camera.h"
 #include "Material.h"
+#include "CheckGLError.h"
+
+#include "vertex_types.h"
+
+#include "Animation.h"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #include "GL.h"
 
@@ -29,6 +37,11 @@ namespace gdp
 
     // Managers
     AnimationManager g_AnimationManager;
+
+    Assimp::Importer g_Importer;
+
+    bool RenderObjects;
+    bool RenderPhysicsDebug;
 
     void Update();
     void Render();
@@ -58,8 +71,14 @@ namespace gdp
         GLuint Color;
     } gBoneShader;
 
+    struct LineShader {
+        GLuint ProjectionMatrix;
+        GLuint ViewMatrix;
+    } gLineShader;
+
     unsigned int gBoneShaderId;
     unsigned int gSimpleShaderId;
+    unsigned int gLineShaderId;
 
     glm::mat4 gProjectionMatrix;
     glm::mat4 gViewMatrix;
@@ -114,6 +133,15 @@ namespace gdp
         g_PhysicsWorld->TimeStep(elapsedTimeInSeconds);
         g_AnimationManager.Update(gGameObjectVec, elapsedTimeInSeconds);
 
+        if (GDP_IsKeyPressed('n'))
+        {
+            RenderObjects = !RenderObjects;
+        }
+        if (GDP_IsKeyPressed('m'))
+        {
+            RenderPhysicsDebug = !RenderPhysicsDebug;
+        }
+
         Updatecallback(elapsedTimeInSeconds);
         memcpy(&(gLastKeyStates[0]), &(gKeyStates[0]), 255);
     }
@@ -141,38 +169,38 @@ namespace gdp
         glm::mat4 ScaleMatrix = glm::scale(glm::mat4(1.0f), go->Scale);
         glm::mat4 ModelMatrix = TranslationMatrix * RotationMatrix * ScaleMatrix;
 
-        //if (go->HasBones)
-        //{
-        //    ShaderProgram* shader;
-        //    shader = GetShaderProgram(gBoneShaderId);
-        //    glUseProgram(shader->id);
-        //    glUniformMatrix4fv(gBoneShader.ProjectionMatrix, 1, GL_FALSE, glm::value_ptr(gProjectionMatrix));
-        //    glUniformMatrix4fv(gBoneShader.ViewMatrix, 1, GL_FALSE, glm::value_ptr(gViewMatrix));
+        if (go->HasBones)
+        {
+            ShaderProgram* shader;
+            shader = GetShaderProgram(gBoneShaderId);
+            glUseProgram(shader->id);
+            glUniformMatrix4fv(gBoneShader.ProjectionMatrix, 1, GL_FALSE, glm::value_ptr(gProjectionMatrix));
+            glUniformMatrix4fv(gBoneShader.ViewMatrix, 1, GL_FALSE, glm::value_ptr(gViewMatrix));
 
-        //    Material* material = GetMaterial(go->Renderer.MaterialId);
-        //    Texture* texture = GetTexture(material->TextureId);
+            Material* material = GetMaterial(go->Renderer.MaterialId);
+            Texture* texture = GetTexture(material->TextureId);
 
-        //    glActiveTexture(texture->glEnum);
-        //    glBindTexture(GL_TEXTURE_2D, texture->id);
-        //    glUniform1i(gBoneShader.Texture00, texture->id - 1);
+            glActiveTexture(texture->glEnum);
+            glBindTexture(GL_TEXTURE_2D, texture->id);
+            glUniform1i(gBoneShader.Texture00, texture->id - 1);
 
-        //    glUniform3fv(gBoneShader.Color, 1, glm::value_ptr(material->Color));
+            glUniform3fv(gBoneShader.Color, 1, glm::value_ptr(material->Color));
 
-        //    glUniformMatrix4fv(gBoneShader.ModelMatrix, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
-        //    glUniformMatrix4fv(gBoneShader.RotationMatrix, 1, GL_FALSE, glm::value_ptr(RotationMatrix));
+            glUniformMatrix4fv(gBoneShader.ModelMatrix, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+            glUniformMatrix4fv(gBoneShader.RotationMatrix, 1, GL_FALSE, glm::value_ptr(RotationMatrix));
 
-        //    for (int i = 0; i < 4; i++)
-        //    {
-        //        glUniformMatrix4fv(gBoneShader.BoneMatrices[i], 1, GL_FALSE, glm::value_ptr(go->BoneModelMatrices[i]));
-        //        glUniformMatrix4fv(gBoneShader.BoneRotationMatrices[i], 1, GL_FALSE, glm::value_ptr(go->BoneRotationMatrices[i]));
-        //    }
+            for (int i = 0; i < 4; i++)
+            {
+                glUniformMatrix4fv(gBoneShader.BoneMatrices[i], 1, GL_FALSE, glm::value_ptr(go->BoneModelMatrices[i]));
+                glUniformMatrix4fv(gBoneShader.BoneRotationMatrices[i], 1, GL_FALSE, glm::value_ptr(go->BoneRotationMatrices[i]));
+            }
 
-        //    Model* model = GetModel(go->Renderer.MeshId);
-        //    glBindVertexArray(model->Vbo);
-        //    glDrawElements(GL_TRIANGLES, model->NumTriangles * 3, GL_UNSIGNED_INT, (GLvoid*)0);
-        //}
-        //else
-        //{
+            Model* model = GetModel(go->Renderer.MeshId);
+            glBindVertexArray(model->Vbo);
+            glDrawElements(GL_TRIANGLES, model->NumTriangles * 3, GL_UNSIGNED_INT, (GLvoid*)0);
+        }
+        else
+        {
             ShaderProgram* shader;
             shader = GetShaderProgram(gSimpleShaderId);
             glUseProgram(shader->id);
@@ -195,7 +223,7 @@ namespace gdp
             Model* model = GetModel(go->Renderer.MeshId);
             glBindVertexArray(model->Vbo);
             glDrawElements(GL_TRIANGLES, model->NumTriangles * 3, GL_UNSIGNED_INT, (GLvoid*)0);
-        //}
+        }
 
 
         for (int i = 0; i < go->Children.size(); i++)
@@ -224,14 +252,26 @@ namespace gdp
         gProjectionMatrix = glm::perspective(glm::radians(45.0f), ((GLfloat)gWindow.width) / ((GLfloat)gWindow.height), 0.1f, 1000.0f);
         gViewMatrix = glm::lookAt(gCamera.position, gCamera.position + direction, glm::vec3(0.0f, 1.0f, 0.0f));
 
-        glm::mat4 worldOrigin(1.f); // Identity Matrix
-        for (int i = 0; i < gGameObjectVec.size(); i++)
+        if (RenderObjects)
         {
-            GameObject* go = gGameObjectVec[i];
-            if (!go->Enabled || go->HasParent)
-                continue;
+            glm::mat4 worldOrigin(1.f); // Identity Matrix
+            for (int i = 0; i < gGameObjectVec.size(); i++)
+            {
+                GameObject* go = gGameObjectVec[i];
+                if (!go->Enabled || go->HasParent)
+                    continue;
 
-            RenderGameObject(go, worldOrigin);
+                RenderGameObject(go, worldOrigin);
+            }
+        }
+
+        if (RenderPhysicsDebug)
+        {
+            glUseProgram(GetShaderProgram(gLineShaderId)->id);
+            glUniformMatrix4fv(gLineShader.ProjectionMatrix, 1, GL_FALSE, glm::value_ptr(gProjectionMatrix));
+            glUniformMatrix4fv(gLineShader.ViewMatrix, 1, GL_FALSE, glm::value_ptr(gViewMatrix));
+            GDP_GetPhysicsWorld()->DebugDraw();
+            CheckGLError();
         }
         
         if (Rendercallback != nullptr)
@@ -283,10 +323,6 @@ namespace gdp
             GLUT_ACTION_ON_WINDOW_CLOSE,
             GLUT_ACTION_GLUTMAINLOOP_RETURNS
         );
-
-        // Create physics factory and the world
-        g_PhysicsFactory = new PhysicsFactoryType();
-        g_PhysicsWorld = g_PhysicsFactory->CreateWorld();
     }
 
     void GDP_Destroy() {
@@ -323,6 +359,9 @@ namespace gdp
 
         glewInit();
 
+        // Create physics factory and the world
+        g_PhysicsFactory = new PhysicsFactoryType();
+        g_PhysicsWorld = g_PhysicsFactory->CreateWorld();
 
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
@@ -342,6 +381,247 @@ namespace gdp
         return g_PhysicsFactory->CreateSoftBody(desc);
     }
 
+
+    bool LoadAssimpMesh(unsigned int& id, const aiMesh* mesh)
+    {
+        if (mesh == nullptr)
+            return false;
+        printf("LoadAssimpMesh %s\n", mesh->mName.C_Str());
+
+        unsigned int numFaces = mesh->mNumFaces;
+
+        unsigned int numIndicesInIndexArray = numFaces * 3;
+
+        sVertex_p4t4n4* pTempVertArray = new sVertex_p4t4n4[numIndicesInIndexArray * 2];
+        GLuint* pIndexArrayLocal = new GLuint[numIndicesInIndexArray * 2];
+
+        std::vector<unsigned int> triangles;
+        int vertArrayIndex = 0;
+        for (int faceIndex = 0; faceIndex < numFaces; faceIndex++)
+        {
+            const aiFace& face = mesh->mFaces[faceIndex];
+
+            // You can assert here to ensure mNumIndices is 3
+            // Unless you support non 3 face models 
+
+            for (int indicesIndex = 0; indicesIndex < face.mNumIndices; indicesIndex++)
+            {
+                unsigned int vertexIndex = face.mIndices[indicesIndex];
+                triangles.push_back(vertexIndex);
+
+                const aiVector3D& vertex = mesh->mVertices[vertexIndex];
+
+                pTempVertArray[vertArrayIndex].Pos.x = vertex.x;
+                pTempVertArray[vertArrayIndex].Pos.y = vertex.y;
+                pTempVertArray[vertArrayIndex].Pos.z = vertex.z;
+                pTempVertArray[vertArrayIndex].Pos.w = 1.0f;
+
+                if (mesh->HasNormals())
+                {
+                    const aiVector3D& normal = mesh->mNormals[vertexIndex];
+                    pTempVertArray[vertArrayIndex].Normal.x = normal.x;
+                    pTempVertArray[vertArrayIndex].Normal.y = normal.y;
+                    pTempVertArray[vertArrayIndex].Normal.z = normal.z;
+                    pTempVertArray[vertArrayIndex].Normal.w = 0.f;
+                }
+                else
+                {
+                    pTempVertArray[vertArrayIndex].Normal.x = 1.f;
+                    pTempVertArray[vertArrayIndex].Normal.y = 0.f;
+                    pTempVertArray[vertArrayIndex].Normal.z = 0.f;
+                    pTempVertArray[vertArrayIndex].Normal.w = 0.f;
+                }
+
+                if (mesh->HasTextureCoords(0))
+                {
+                    const aiVector3D& uvCoord = mesh->mTextureCoords[0][vertexIndex];
+                    pTempVertArray[vertArrayIndex].TexUVx2.x = uvCoord.x;
+                    pTempVertArray[vertArrayIndex].TexUVx2.y = uvCoord.y;
+                }
+                if (mesh->HasTextureCoords(1))
+                {
+                    const aiVector3D& uvCoord = mesh->mTextureCoords[1][vertexIndex];
+                    pTempVertArray[vertArrayIndex].TexUVx2.z = uvCoord.x;
+                    pTempVertArray[vertArrayIndex].TexUVx2.w = uvCoord.y;
+                }
+
+                vertArrayIndex++;
+            }
+        }
+
+
+        printf("  - Done loading Model data");
+
+        Model* model = new Model();
+        model->NumTriangles = numFaces;
+        glGenVertexArrays(1, &model->Vbo);
+        glBindVertexArray(model->Vbo);
+        CheckGLError();
+
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
+        CheckGLError();
+
+        glGenBuffers(1, &model->VertexBufferId);
+        glGenBuffers(1, &model->IndexBufferId);
+        CheckGLError();
+
+        glBindBuffer(GL_ARRAY_BUFFER, model->VertexBufferId);
+        CheckGLError();
+
+        unsigned int totalVertBufferSizeBYTES = numIndicesInIndexArray * sizeof(sVertex_p4t4n4);
+        glBufferData(GL_ARRAY_BUFFER, totalVertBufferSizeBYTES, pTempVertArray, GL_STATIC_DRAW);
+        CheckGLError();
+
+        unsigned int bytesInOneVertex = sizeof(sVertex_p4t4n4);
+        unsigned int byteOffsetToPosition = offsetof(sVertex_p4t4n4, Pos);
+        unsigned int byteOffsetToNormal = offsetof(sVertex_p4t4n4, Normal);
+        unsigned int byteOffsetToUVCoords = offsetof(sVertex_p4t4n4, TexUVx2);
+
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, bytesInOneVertex, (GLvoid*)byteOffsetToPosition);
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, bytesInOneVertex, (GLvoid*)byteOffsetToUVCoords);
+        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, bytesInOneVertex, (GLvoid*)byteOffsetToNormal);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->IndexBufferId);
+
+        unsigned int sizeOfIndexArrayInBytes = numIndicesInIndexArray * sizeof(GLuint);
+
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeOfIndexArrayInBytes, pIndexArrayLocal, GL_STATIC_DRAW);
+
+        glBindVertexArray(0);
+
+        delete[] pTempVertArray;
+        delete[] pIndexArrayLocal;
+
+        printf("  - Done Generating Buffer data");
+
+        printf("  - Finished Loading model \"%s\" with %d vertices, %d triangles, id is: %d\n", mesh->mName.C_Str(), model->vertices.size(), model->NumTriangles, model->Vbo);
+        id = gModelVec.size();
+        gModelVec.push_back(model);
+        return true;
+    }
+
+    void LoadAssimpAnimation(const aiAnimation* animation)
+    {
+        if (animation == nullptr)
+            return;
+
+        printf("LoadAssimpAnimation %s\n", animation->mName.C_Str());
+
+        gdp::AnimationData animationData;
+        animationData.Name = std::string(animation->mName.C_Str());
+        animationData.Duration = animation->mDuration;
+        animationData.TicksPerSecond = animation->mTicksPerSecond;
+
+        unsigned int numChannels = animation->mNumChannels;
+
+        printf("- Loading %d channels\n", numChannels);
+
+
+        for (int i = 0; i < numChannels; i++)
+        {
+
+            const aiNodeAnim* nodeAnim = animation->mChannels[i];
+
+            std::string name(nodeAnim->mNodeName.C_Str());
+
+            unsigned int numPositionKeys = nodeAnim->mNumPositionKeys;
+            unsigned int numRotationKeys = nodeAnim->mNumRotationKeys;
+            unsigned int numScalingKeys = nodeAnim->mNumScalingKeys;
+
+            animationData.PositionKeyFrames.resize(numPositionKeys);
+            animationData.RotationKeyFrames.resize(numRotationKeys);
+            animationData.ScaleKeyFrames.resize(numScalingKeys);
+
+            for (int keyIdx = 0; keyIdx < numPositionKeys; keyIdx++)
+            {
+                const aiVectorKey& posKey = nodeAnim->mPositionKeys[keyIdx];
+                animationData.PositionKeyFrames[keyIdx].time = posKey.mTime;
+                animationData.PositionKeyFrames[keyIdx].value.x = posKey.mValue.x;
+                animationData.PositionKeyFrames[keyIdx].value.y = posKey.mValue.y;
+                animationData.PositionKeyFrames[keyIdx].value.z = posKey.mValue.z;
+            }
+
+            for (int keyIdx = 0; keyIdx < numRotationKeys; keyIdx++)
+            {
+                const aiQuatKey& rotKey = nodeAnim->mRotationKeys[keyIdx];
+                animationData.RotationKeyFrames[keyIdx].time = rotKey.mTime;
+                animationData.RotationKeyFrames[keyIdx].value.x = rotKey.mValue.x;
+                animationData.RotationKeyFrames[keyIdx].value.y = rotKey.mValue.y;
+                animationData.RotationKeyFrames[keyIdx].value.z = rotKey.mValue.z;
+                animationData.RotationKeyFrames[keyIdx].value.w = rotKey.mValue.w;
+            }
+
+            for (int keyIdx = 0; keyIdx < numScalingKeys; keyIdx++)
+            {
+                const aiVectorKey& scaleKey = nodeAnim->mScalingKeys[keyIdx];
+                animationData.ScaleKeyFrames[keyIdx].time = scaleKey.mTime;
+                animationData.ScaleKeyFrames[keyIdx].value.x = scaleKey.mValue.x;
+                animationData.ScaleKeyFrames[keyIdx].value.y = scaleKey.mValue.y;
+                animationData.ScaleKeyFrames[keyIdx].value.z = scaleKey.mValue.z;
+            }
+
+            // Store AnimationData inside our animation manager
+            g_AnimationManager.LoadAnimation(animationData.Name, animationData);
+        }
+
+        printf("- Done!\n");
+    }
+
+    void GDP_LoadFBXFile(unsigned int& meshId, std::string& animationName, const std::string& filename)
+    {
+        const aiScene* scene = g_Importer.ReadFile(filename,
+            aiProcess_GenNormals |
+            aiProcess_LimitBoneWeights |
+            aiProcess_Triangulate |
+            aiProcess_JoinIdenticalVertices);
+
+        printf("GDP_LoadFBXFile: %s\n", filename.c_str());
+
+        // Create our Bone Hierarchy
+        aiNode* node = scene->mRootNode;
+        for (int i = 0; i < node->mNumChildren; i++)
+        {
+            aiNode* child = node->mChildren[i];
+
+            //Find channel data from our node name:
+            child->mName;
+        }
+
+
+        if (scene->HasMeshes())
+        {
+            // Load all the meshes
+            unsigned int numMeshes = scene->mNumMeshes;
+            printf("-Loading %d meshes!\n", numMeshes);
+            for (int i = 0; i < numMeshes; i++)
+            {
+                aiMesh* mesh = scene->mMeshes[i];
+                if (!LoadAssimpMesh(meshId, mesh))
+                {
+                    printf("Failed to load mesh! \n");
+                }
+            }
+
+            printf("\n");
+
+            unsigned int numAnimations = scene->mNumAnimations;
+            printf("-Loading %d animations!\n", numAnimations);
+            for (int i = 0; i < numAnimations; i++)
+            {
+                aiAnimation* animation = scene->mAnimations[i];
+
+
+                animationName = animation->mName.C_Str();
+                LoadAssimpAnimation(animation);
+            }
+        }
+
+        printf("Done loading FBX file!\n");
+
+        system("Pause");
+    }
 
     void GDP_LoadAnimation(const char* name, AnimationData animation)
     {
@@ -365,13 +645,22 @@ namespace gdp
         GDP_CreateShaderProgramFromFiles(gSimpleShaderId, programId,
             "assets/shaders/SimpleShader.vertex.glsl",
             "assets/shaders/SimpleShader.fragment.glsl");
+        CheckGLError();
 
         GDP_CreateShaderProgramFromFiles(gBoneShaderId, programId,
             "assets/shaders/BoneShader.vertex.glsl",
             "assets/shaders/BoneShader.fragment.glsl");
+        CheckGLError();
+
+        GDP_CreateShaderProgramFromFiles(gLineShaderId, programId,
+            "assets/shaders/LineShader.vertex.glsl",
+            "assets/shaders/LineShader.fragment.glsl");
+        CheckGLError();
+
 
         ShaderProgram* shader;
         shader = GetShaderProgram(gSimpleShaderId);
+        printf("gSimpleShaderId id: %d\n", shader->id);
         glUseProgram(shader->id);
         gSimpleShader.ModelMatrix = glGetUniformLocation(shader->id, "ModelMatrix");
         gSimpleShader.ViewMatrix = glGetUniformLocation(shader->id, "ViewMatrix");
@@ -379,8 +668,10 @@ namespace gdp
         gSimpleShader.RotationMatrix = glGetUniformLocation(shader->id, "RotationMatrix");
         gSimpleShader.Texture00 = glGetUniformLocation(shader->id, "Texture00");
         gSimpleShader.Color = glGetUniformLocation(shader->id, "Color");
+        CheckGLError();
 
         shader = GetShaderProgram(gBoneShaderId);
+        printf("gBoneShaderId id: %d\n", shader->id);
         glUseProgram(shader->id);
         gBoneShader.ModelMatrix = glGetUniformLocation(shader->id, "ModelMatrix");
         gBoneShader.ViewMatrix = glGetUniformLocation(shader->id, "ViewMatrix");
@@ -396,7 +687,14 @@ namespace gdp
         gBoneShader.BoneRotationMatrices[1] = glGetUniformLocation(shader->id, "BoneRotationMatrices[1]");
         gBoneShader.BoneRotationMatrices[2] = glGetUniformLocation(shader->id, "BoneRotationMatrices[2]");
         gBoneShader.BoneRotationMatrices[3] = glGetUniformLocation(shader->id, "BoneRotationMatrices[3]");
+        CheckGLError();
 
+        shader = GetShaderProgram(gLineShaderId);
+        printf("gLineShaderId id: %d\n", shader->id);
+        glUseProgram(shader->id);
+        gLineShader.ViewMatrix = glGetUniformLocation(shader->id, "ViewMatrix");
+        gLineShader.ProjectionMatrix = glGetUniformLocation(shader->id, "ProjectionMatrix");
+        CheckGLError();
         //GDP_LoadTexture(textureId, "assets/textures/MetalPipeWallRusty_basecolor.png");
 
         //GDP_LoadModel(modelId, "assets/models/cube.fbx");

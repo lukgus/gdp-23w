@@ -10,5 +10,8 @@ public:
 	RigidBody();
 	virtual ~RigidBody();
 
+	void AddToWorld();
+	void RemoveFromWorld();
+
 	Shape* m_Shape;
 };

@@ -1,5 +1,7 @@
 #include <engine/engine.h>
 #include <systems/motionsystem.h>
+#include <physics/PhysicsSystem.h>
+#include <physics/components/rigidbodycomponent.h>
 #include <components/positioncomponent.h>
 #include <components/velocitycomponent.h>
 
@@ -8,11 +10,12 @@ Engine g_Engine;
 unsigned int CreateAnEntity()
 {
 	unsigned int entity = g_Engine.CreateEntity();
-	//PositionComponent* posCmp = g_Engine.AddComponent<PositionComponent>(entity);
+	RigidBodyComponent* rbc = g_Engine.AddComponent<RigidBodyComponent>(entity);
+	//rbc->SetRigidBody();
+	//rbc->SetPhysicsMaterial();
+	// Some way to customize the rbc
+	// You want to assign the shape yourself, and collider info
 
-	//posCmp->x = 0;
-	//posCmp->y = 0;
-	//posCmp->z = 0;
 
 	return entity;
 }
@@ -29,7 +32,10 @@ std::vector<PositionVelocityEntityType> position_velocity_types;
 int main(int argc, char** argv)
 {
 	MotionSystem motion;
+	PhysicsSystem physics;
+
 	g_Engine.AddSystem(&motion);
+	g_Engine.AddSystem(&physics);
 
 	g_Engine.Update(0.1f);
 	g_Engine.Update(0.1f);

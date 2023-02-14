@@ -10,6 +10,7 @@
 
 namespace physics
 {
+
 	class PhysicsWorld : public iPhysicsWorld
 	{
 	public:
@@ -23,6 +24,11 @@ namespace physics
 
 		virtual void TimeStep(float dt) override;
 
+		virtual void RegisterCollisionListener(iCollisionListener* listener) override
+		{
+			m_CollisionListener = listener;
+		}
+
 	private:
 		Vector3 m_Gravity;
 
@@ -31,6 +37,9 @@ namespace physics
 		std::vector<SoftBody*> m_SoftBodies;
 
 		CollisionHandler* m_CollisionHandler;
+
+		iCollisionListener* m_CollisionListener;
+
 
 		PhysicsWorld(const PhysicsWorld&) {}
 		PhysicsWorld& operator=(const PhysicsWorld&) {

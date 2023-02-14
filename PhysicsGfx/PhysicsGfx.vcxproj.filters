@@ -33,9 +33,6 @@
     <ClCompile Include="World.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DebugRender.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PhysicsDemoWorld.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -52,6 +49,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AIPathFindingDemoWorld.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckGLError.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterAnimationDemoWorld.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -95,9 +98,6 @@
     <ClInclude Include="PhysicsDemoWorld.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DebugRender.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AnimationDemoWorld.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -116,9 +116,20 @@
     <ClInclude Include="AIPathFindingDemoWorld.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CheckGLError.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vertex_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterAnimationDemoWorld.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\BoneShader.vertex.glsl" />
     <None Include="assets\shaders\BoneShader.fragment.glsl" />
+    <None Include="assets\shaders\LineShader.vertex.glsl" />
+    <None Include="assets\shaders\LineShader.fragment.glsl" />
   </ItemGroup>
 </Project>

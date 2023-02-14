@@ -19,9 +19,10 @@
 #pragma comment(lib, "BulletSource.lib")
 #pragma comment(lib, "BulletPhysics.lib")
 #include <physics\bullet\PhysicsFactory.h>
+
 #elif defined PhysX_Physics
 #pragma comment(lib, "PhysXPhysics.lib")
-#include <physics\physx\PhysicsFactory.h>
+#pragma comment(lib, "PhysXSource.lib")
 #include <physics\physx\PhysicsFactory.h>
 #endif
 
